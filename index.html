@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ten Minutes - Interactive Film Experience</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Bebas+Neue&family=Special+Elite&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="top-nav">
+        <ul>
+            <li><a href="#" data-tab="home"><i class="fas fa-film"></i> HOME</a></li>
+            <li><a href="#" data-tab="description"><i class="fas fa-info-circle"></i> SYNOPSIS</a></li>
+            <li><a href="#" data-tab="comic"><i class="fas fa-play-circle"></i> PLAY</a></li>
+            <li><a href="#" data-tab="team"><i class="fas fa-users"></i> CAST & CREW</a></li>
+        </ul>
+    </nav>
+
+    <noscript>
+        <div style="text-align: center; padding: 20px; background-color: #ffcccc; color: #cc0000; font-family: sans-serif;">
+            <p>This experience requires JavaScript to function properly. Please enable JavaScript in your browser settings.</p>
+        </div>
+    </noscript>
+
+    <!-- Home Section -->
+    <section id="home" class="content-section active">
+        <div class="container">
+            <h1>TEN MINUTES <span class="subtitle">AN INTERACTIVE FILM EXPERIENCE</span></h1>
+            <div class="welcome-content">
+                <p class="tagline">In a world where every second counts, one student's break between classes becomes a journey of choices.</p>
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <i class="fas fa-clock"></i>
+                        <h3>REAL-TIME DECISIONS</h3>
+                        <p>Navigate through a 10-minute window of opportunity</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-random"></i>
+                        <h3>MULTIPLE ENDINGS</h3>
+                        <p>Discover different story outcomes based on your choices</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-brain"></i>
+                        <h3>IMMERSIVE STORYTELLING</h3>
+                        <p>Experience a narrative that responds to your decisions</p>
+                    </div>
+                </div>
+                <div class="cta-container">
+                    <p class="cta-text">Ready to begin your journey?</p>
+                    <a href="#" data-tab="comic" class="cta-button">
+                        START EXPERIENCE <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Description Section -->
+    <section id="description" class="content-section">
+        <div class="container">
+            <h1>SYNOPSIS</h1>
+            <div class="description-content">
+                <div class="description-text">
+                    <p class="lead">In the fast-paced world of academia, every minute counts. "Ten Minutes" puts you in the shoes of a student navigating the crucial break between classes.</p>
+                    <p>Will you seize the moment to connect with friends? Grab a quick meal? Or tackle those pending responsibilities?</p>
+                    <p>The clock is ticking. The choice is yours. But remember - you only have ten minutes.</p>
+                </div>
+                <div class="story-elements">
+                    <div class="element-card">
+                        <i class="fas fa-users"></i>
+                        <h3>Social Dynamics</h3>
+                        <p>Navigate complex social interactions</p>
+                    </div>
+                    <div class="element-card">
+                        <i class="fas fa-utensils"></i>
+                        <h3>Time Management</h3>
+                        <p>Balance immediate needs with responsibilities</p>
+                    </div>
+                    <div class="element-card">
+                        <i class="fas fa-hourglass-half"></i>
+                        <h3>Critical Choices</h3>
+                        <p>Make decisions under pressure</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comic Section -->
+    <section id="comic" class="content-section">
+        <div class="comic-container" id="comic-start">
+            <header>
+                <h1>TEN MINUTES</h1>
+                <div class="timer">
+                    <i class="fas fa-hourglass-half"></i>
+                    <span id="time-remaining">10:00</span>
+                </div>
+            </header>
+
+            <main>
+                <!-- Scene Container -->
+                <div id="scene-container" class="scene-container">
+                    <!-- Scene 1: Leaving Class -->
+                    <div class="scene" id="scene1" data-scene="1">
+                        <div class="panel">
+                            <div class="visual">
+                                <img src="assets/scene1.png" alt="Scene 1: Two friends leaving class">
+                                <button class="nav-btn back-btn hidden"><i class="fas fa-chevron-left"></i></button>
+                                <button class="nav-btn forward-btn hidden"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                            <div class="choices">
+                                <button class="choice-btn" data-next="scene2a" data-choice="choice1">CONTINUE CONVERSATION</button>
+                                <button class="choice-btn" data-next="scene2b" data-choice="choice2">HEAD TO YOUR ROOM</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scene 2A: If You Stay (Talk) -->
+                    <div class="scene" id="scene2a" data-scene="2a">
+                        <div class="panel">
+                            <div class="visual">
+                                <img src="assets/scene2a.png" alt="Scene 2A: You sit in a café or hallway table">
+                                <button class="nav-btn back-btn hidden"><i class="fas fa-chevron-left"></i></button>
+                                <button class="nav-btn forward-btn hidden"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                            <div class="choices">
+                                <button class="choice-btn" data-next="scene6" data-choice="choice1">KEEP TALKING</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scene 2B: If You Leave (Rush to Dorm) -->
+                    <div class="scene" id="scene2b" data-scene="2b">
+                        <div class="panel">
+                            <div class="visual">
+                                <img src="assets/scene2b.png" alt="Scene 2B: You walk quickly down a corridor toward your room">
+                                <button class="nav-btn back-btn hidden"><i class="fas fa-chevron-left"></i></button>
+                                <button class="nav-btn forward-btn hidden"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                            <div class="choices">
+                                <button class="choice-btn" data-next="scene3" data-choice="choice1">PROCEED TO ROOM</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scene 3: Return to Dorm – Ramen vs Laundry -->
+                    <div class="scene" id="scene3" data-scene="3">
+                        <div class="panel">
+                            <div class="visual">
+                                <img src="assets/scene3.png" alt="Scene 3: You enter the room">
+                                <button class="nav-btn back-btn hidden"><i class="fas fa-chevron-left"></i></button>
+                                <button class="nav-btn forward-btn hidden"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                            <div class="choices">
+                                <button class="choice-btn" data-next="scene4a" data-choice="choice1">PREPARE RAMEN</button>
+                                <button class="choice-btn" data-next="scene4b" data-choice="choice2">DO LAUNDRY</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scene 4A: Choose Ramen -->
+                    <div class="scene" id="scene4a" data-scene="4a">
+                        <div class="panel">
+                            <div class="visual">
+                                <img src="assets/scene4a.png" alt="Scene 4A: Water simmers. Steam fogs the window">
+                                <button class="nav-btn back-btn hidden"><i class="fas fa-chevron-left"></i></button>
+                                <button class="nav-btn forward-btn hidden"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                            <div class="choices">
+                                <button class="choice-btn" data-next="scene6" data-choice="choice1">FINISH MEAL</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scene 4B: Choose Laundry -->
+                    <div class="scene" id="scene4b" data-scene="4b">
+                        <div class="panel">
+                            <div class="visual">
+                                <img src="assets/scene4b.png" alt="Scene 4B: You grab the laundry and walk down the hallway">
+                                <button class="nav-btn back-btn hidden"><i class="fas fa-chevron-left"></i></button>
+                                <button class="nav-btn forward-btn hidden"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                            <div class="choices">
+                                <button class="choice-btn" data-next="scene5" data-choice="choice1">GO TO LAUNDRY ROOM</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scene 5: In the Laundry Room -->
+                    <div class="scene" id="scene5" data-scene="5">
+                        <div class="panel">
+                            <div class="visual" data-thought="You said you'd do this last week too.">
+                                <img src="assets/scene5.png" alt="Scene 5: You wait in the laundry room">
+                                <button class="nav-btn back-btn hidden"><i class="fas fa-chevron-left"></i></button>
+                                <button class="nav-btn forward-btn hidden"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                            <div class="choices">
+                                <button class="choice-btn" data-next="scene7" data-choice="choice1">COMPLETE LAUNDRY</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scene 6: If You Never Left the Friend / Ran out of Time -->
+                    <div class="scene" id="scene6" data-scene="6">
+                        <div class="panel">
+                            <div class="visual">
+                                <img src="assets/scene6.png" alt="Scene 6: You rush to your room">
+                                <button class="nav-btn back-btn hidden"><i class="fas fa-chevron-left"></i></button>
+                                <button class="nav-btn forward-btn hidden"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                            <div class="choices">
+                                <button class="choice-btn" data-next="scene7" data-choice="choice1">FACE THE CONSEQUENCES</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scene 7: Next Class Begins (End Scene) -->
+                    <div class="scene" id="scene7" data-scene="7">
+                        <div class="panel">
+                            <div class="visual">
+                                <img src="assets/scene7.png" alt="Scene 7: You're walking up stairs. Or into a lecture hall">
+                                <button class="nav-btn back-btn hidden"><i class="fas fa-chevron-left"></i></button>
+                                <button class="nav-btn forward-btn hidden"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                            <div class="ending-thought" id="ending-thought"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="navigation">
+                    <button id="restart-btn" class="hidden">
+                        <i class="fas fa-redo"></i> RESTART EXPERIENCE
+                    </button>
+                </div>
+            </main>
+
+            <!-- Thought Bubble -->
+            <div id="thought-bubble" class="thought-bubble hidden">
+                <p id="thought-text"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="content-section">
+        <div class="container">
+            <h1>CAST & CREW</h1>
+            <p class="team-intro">Meet the creative minds behind this interactive experience:</p>
+            <div class="team-members">
+                <div class="team-member">
+                    <div class="member-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <h3>Mahlet Atrsaw</h3>
+                    <p class="role">Writer & Director</p>
+                    <div class="member-social">
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading Indicator -->
+    <div class="loading hidden"></div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
