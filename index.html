@@ -1,0 +1,150 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ten Minutes - Living Comic (Fixed)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="comic-loading" id="loading">
+        <div class="loading-text">Loading Comic Universe...</div>
+        <div class="loading-comic"></div>
+    </div>
+
+    <!-- Comic Navigation Bar -->
+    <nav class="comic-navbar" id="navbar">
+        <a href="#" class="nav-logo" id="navLogo">TEN MINUTES</a>
+        
+        <div class="nav-links" id="navLinks">
+            <a href="#" class="nav-link" id="navHome">HOME</a>
+            <a href="#" class="nav-link" id="navComic">COMIC</a>
+            <a href="#" class="nav-link" id="navRestart">RESTART</a>
+            <a href="#" class="nav-link" id="navAbout">ABOUT</a>
+            <a href="#" class="nav-link" id="navFullscreen">FULLSCREEN</a>
+        </div>
+
+        <div class="nav-burger" id="navBurger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Main Comic World -->
+    <div class="comic-world" id="comicWorld">
+        
+        <!-- Timer -->
+        <div class="comic-timer" id="timer">10:00</div>
+
+        <!-- Narrative Box -->
+        <div class="narrative-box" id="narrativeBox">
+            Welcome to your ten-minute journey...
+        </div>
+
+        <!-- HOME PAGE -->
+        <div class="home-page active" id="homePage">
+            <div class="home-content">
+                <div class="title-section">
+                    <h1 class="main-title">TEN MINUTES</h1>
+                    <p class="subtitle">An Interactive Photo Story About Time, Choices, and Student Life</p>
+                </div>
+
+                <div class="interactive-clock" id="interactiveClock">
+                    <div class="clock-face">
+                        <div class="clock-numbers">
+                            <div class="number">12</div>
+                            <div class="number">1</div>
+                            <div class="number">2</div>
+                            <div class="number">3</div>
+                            <div class="number">4</div>
+                            <div class="number">5</div>
+                            <div class="number">6</div>
+                            <div class="number">7</div>
+                            <div class="number">8</div>
+                            <div class="number">9</div>
+                            <div class="number">10</div>
+                            <div class="number">11</div>
+                        </div>
+                        <div class="clock-hand hour-hand"></div>
+                        <div class="clock-hand minute-hand"></div>
+                        <div class="clock-center"></div>
+                    </div>
+                    <p class="clock-text">Click the clock to start your ten-minute journey!</p>
+                </div>
+
+                <div class="preview-panels">
+                    <div class="preview-panel" data-preview="1">
+                        <div class="preview-icon">📚</div>
+                        <p>Class Ends</p>
+                    </div>
+                    <div class="preview-panel" data-preview="2">
+                        <div class="preview-icon">👥</div>
+                        <p>Friends</p>
+                    </div>
+                    <div class="preview-panel" data-preview="3">
+                        <div class="preview-icon">🏃</div>
+                        <p>Rush</p>
+                    </div>
+                    <div class="preview-panel" data-preview="4">
+                        <div class="preview-icon">🏠</div>
+                        <p>Choices</p>
+                    </div>
+                    <div class="preview-panel" data-preview="5">
+                        <div class="preview-icon">🍜</div>
+                        <p>Resolution</p>
+                    </div>
+                </div>
+
+                <div class="home-description">
+                    <p>Every student knows the impossible mathematics of time management. 
+                    You have ten minutes between classes and a thousand micro-decisions to make. 
+                    Each choice ripples through your day, shaping not just your schedule, but your story.</p>
+                    
+                    <p><strong>Will you choose efficiency or humanity? Productivity or presence?</strong></p>
+                </div>
+
+                <button class="start-button" id="startButton">BEGIN YOUR STORY</button>
+            </div>
+        </div>
+
+        <!-- COMIC PAGE -->
+        <div class="comic-page" id="comicPage">
+            <!-- Comic Slider -->
+            <div class="comic-slider" id="comicSlider">
+                <div class="slider-track" id="sliderTrack">
+                    <!-- Slides will be dynamically generated here -->
+                </div>
+            </div>
+            
+            <!-- Slider Navigation -->
+            <div class="slider-nav prev" id="prevBtn">‹</div>
+            <div class="slider-nav next" id="nextBtn">›</div>
+
+            <!-- Slider Dots -->
+            <div class="slider-dots" id="sliderDots">
+                <!-- Dots will be dynamically generated here -->
+            </div>
+        </div>
+
+        <!-- Comic Controls -->
+        <div class="comic-controls">
+            <button class="comic-button" id="restartBtn">RESTART</button>
+        </div>
+    </div>
+
+    <!-- Story Modal -->
+    <div class="story-modal" id="storyModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">×</button>
+            <div id="modalText">
+                <!-- Dynamic content here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
