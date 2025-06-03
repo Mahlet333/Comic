@@ -1,10 +1,10 @@
-// script.js
 class LivingComic {
     constructor() {
         this.currentSlide = 0;
         this.timeLeft = 600; // 10 minutes in seconds
         this.choices = [];
         this.timerActive = false;
+        this.stressLevel = 0;
         this.currentView = 'home'; // 'home' or 'comic'
         this.currentStoryPath = [];
         this.storyPanels = this.defineStoryStructure();
@@ -15,49 +15,52 @@ class LivingComic {
     }
 
     defineStoryStructure() {
-        // EASY IMAGE CONFIGURATION - Just add your images to the images/ folder
-        // and update the image paths here!
+        // STORY STRUCTURE BASED ON YOUR ACTUAL IMAGES
+        // The story has two key decision points that redirect the narrative flow
         return {
             'start': {
                 id: 'start',
                 caption: "He always plans too much for too little time. Today, he has only ten minutes. And a thousand tiny decisions.",
-                image: 'images/1s.png', // Add your image here
+                image: 'images/1.png',
                 next: 'friend_approach'
             },
             'friend_approach': {
                 id: 'friend_approach',
-                caption: "She is chatting on but his brain's already running ahead of his. Should he stay and chat or run to the room??? Help him make a decision.'",
-                image: 'images/2s.png', // Add your image here
-                next: 'chat_scene'
+                caption: "She is chatting on but his brain’s already running ahead of his. Should he stay and chat or run to the room??? Help him make a decision.",
+                image: 'images/2.png',
+                choices: [
+                    { text: 'STAY & CHAT', action: 'chat', next: 'chat_scene' },
+                    { text: 'RUN TO ROOM', action: 'rush', next: 'hallway_run' }
+                ]
             },
             'chat_scene': {
                 id: 'chat_scene',
                 caption: "They sat down, and the conversation got better and better!!! And he kept worrying about the chores waiting for him in the room.",
-                image: 'images/chat_scene.jpg', // Add your image here
+                image: 'images/3.png',
                 next: 'rush_stairs'
             },
             'rush_stairs': {
                 id: 'rush_stairs',
-                caption: "THUD THUD THUD - Student running frantically up stairs after spending time chatting",
-                image: 'images/rush_stairs.jpg', // Add your image here
+                caption: "After they separated, he ran! Food? Laundry? Breathing? He just needed to clear his head in ten minutes or less.",
+                image: 'images/4.png',
                 next: 'hallway_run'
             },
             'hallway_run': {
                 id: 'hallway_run',
-                caption: "After they separated, he ran! Food? Laundry? Breathing?He just needed to clear his head in ten minutes or less.",
-                image: 'images/hallway_run.jpg', // Add your image here
+                caption: "Less than ten minutes. No plan. No pause. Just run.",
+                image: 'images/5.png',
                 next: 'room_door'
             },
             'room_door': {
                 id: 'room_door',
-                caption: "Student at door with SIGH - He finally reached his room. But inside waited two battles: One boiling, one overflowing.",
-                image: 'images/room_door.jpg', // Add your image here
+                caption: "He finally reached his room. But inside waited two battles: One boiling, one overflowing.",
+                image: 'images/6.png',
                 next: 'big_choice'
             },
             'big_choice': {
                 id: 'big_choice',
-                caption: "Student in room between laundry basket and ramen pot thinking 'Laundry or ramen... Whatever I skip, I'll regret later.'",
-                image: 'images/big_choice.jpg', // Add your image here
+                caption: "He doesn’t have time to think. He needs to act. Now. HELP HIM CHOOSE!",
+                image: 'images/7.png',
                 choices: [
                     { text: 'MAKE RAMEN', action: 'ramen', next: 'ramen_bliss' },
                     { text: 'DO LAUNDRY', action: 'laundry', next: 'laundry_journey' }
@@ -65,55 +68,50 @@ class LivingComic {
             },
             'ramen_bliss': {
                 id: 'ramen_bliss',
-                caption: "AMAZING! - Student savoring ramen noodles in pure bliss, steam rising, completely present in the moment",
-                image: 'images/ramen_bliss.jpg', // Add your image here
+                caption: "For a second, everything else faded. No deadlines. No choices. Just noodles.",
+                image: 'images/8.png',
                 next: 'time_shock'
             },
             'time_shock': {
                 id: 'time_shock',
-                caption: "NOOO!! - Student's face in horror looking at phone, realizing time is almost up while ramen burns",
-                image: 'images/time_shock.jpg', // Add your image here
+                caption: "But....He had almost forgotten that time was almost up. He quickly checked his phone. It was already time for his next class..",
+                image: 'images/9.png',
                 next: 'ramen_unfinished'
             },
             'ramen_unfinished': {
                 id: 'ramen_unfinished',
-                caption: "Student leaving unfinished ramen, grabbing bag thinking 'I'll finish it later... maybe.'",
-                image: 'images/ramen_unfinished.jpg', // Add your image here
-                next: 'ramen_ending'
+                caption: "He didn’t finish the noodles. But time waits for no one. So he grabbed his bag... and ran.",
+                image: 'images/10.png',
+                next: 'final_ending'
             },
             'laundry_journey': {
                 id: 'laundry_journey',
-                caption: "Student hurriedly carrying laundry basket saying 'Let's get this over with.'",
-                image: 'images/laundry_journey.jpg', // Add your image here
+                caption: "Let's get this over with. He made his choice. Laundry over lunch.",
+                image: 'images/11.png',
                 next: 'laundry_hallway'
             },
             'laundry_hallway': {
                 id: 'laundry_hallway',
-                caption: "Student walking down hallway carrying colorful patterned laundry bag toward the unexplored zones",
-                image: 'images/laundry_hallway.jpg', // Add your image here
+                caption: "He made his choice. Laundry over lunch.",
+                image: 'images/12.png',
                 next: 'washing_machine'
             },
             'washing_machine': {
                 id: 'washing_machine',
-                caption: "Close-up view through washing machine door as student loads laundry inside",
-                image: 'images/washing_machine.jpg', // Add your image here
+                caption: "He finally set out for the unexplored zones. THE LAUNDRY ROOM. Where rigour is tested and only the strong survive.",
+                image: 'images/13.png',
                 next: 'laundry_victory'
             },
             'laundry_victory': {
                 id: 'laundry_victory',
-                caption: "FINALLY!! - Student celebrating with arms raised in triumph in laundry room",
-                image: 'images/laundry_victory.jpg', // Add your image here
-                next: 'laundry_ending'
+                caption: "DONE AND GONE!!! Yalla to the next class!!!",
+                image: 'images/14.png',
+                next: 'final_ending'
             },
-            'ramen_ending': {
-                id: 'ramen_ending',
-                caption: "Student walking through hallway having used his ten minutes imperfectly but meaningfully",
-                image: 'images/ramen_ending.jpg' // Add your image here
-            },
-            'laundry_ending': {
-                id: 'laundry_ending',
-                caption: "Student walking confidently through hallway with sense of accomplishment",
-                image: 'images/laundry_ending.jpg' // Add your image here
+            'final_ending': {
+                id: 'final_ending',
+                caption: "He used his ten minutes. Not perfectly. Not completely. But he used them.",
+                image: 'images/15.png'
             }
         };
     }
@@ -191,14 +189,6 @@ class LivingComic {
         // Controls
         document.getElementById('restartBtn').addEventListener('click', () => this.restart());
         document.getElementById('modalClose').addEventListener('click', () => this.closeModal());
-
-        // Panel interactions - now handled dynamically
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('comic-panel') || e.target.closest('.comic-panel')) {
-                const panel = e.target.closest('.comic-panel') || e.target;
-                this.activatePanel(panel);
-            }
-        });
 
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
@@ -289,7 +279,8 @@ class LivingComic {
     }
 
     buildInitialStoryPath() {
-        this.currentStoryPath = ['start', 'friend_approach', 'chat_scene', 'rush_stairs', 'hallway_run', 'room_door', 'big_choice'];
+        // Only push panels up through the first decision point ('friend_approach').
+        this.currentStoryPath = ['start', 'friend_approach'];
         this.currentSlide = 0;
         console.log('Built initial story path:', this.currentStoryPath);
     }
@@ -349,10 +340,11 @@ class LivingComic {
                 const choicePortal = document.createElement('div');
                 choicePortal.className = 'choice-portal';
                 choicePortal.textContent = choice.text;
-                choicePortal.style.bottom = '10%';
-                choicePortal.style[choiceIndex === 0 ? 'left' : 'right'] = '15%';
+                choicePortal.style.position = 'absolute';
+                choicePortal.style.top      = '60%';      // move _up_ from bottom
+                choicePortal.style[ choiceIndex === 0 ? 'left' : 'right' ] = '15%';
                 choicePortal.addEventListener('click', (e) => this.makeChoice(choice.action, choice.next, e));
-                panelContent.appendChild(choicePortal);
+                photoContainer.appendChild(choicePortal);
             });
         }
         
@@ -500,7 +492,6 @@ class LivingComic {
         
         this.createSoundEffect();
         this.createExplosion(panel);
-        this.showNarrative(previews[previewNumber] || "A moment in the ten-minute journey...");
     }
 
     hoverPreview(panel) {
@@ -786,37 +777,27 @@ class LivingComic {
     }
 
     showAbout() {
-        const aboutText = `"Ten Minutes" is an interactive photo-comic experience that explores the weight of small decisions in student life. 
+        const aboutText = `"Ten Minutes" is an interactive photo-comic about the chaos of student life — where ten minutes feels like a lifetime and a blink.
 
-Based on the reality that students often have impossible amounts to accomplish in tiny windows of time, 
-this story follows one student's journey through a ten-minute break between classes.
+You’ve got laundry piling up, ramen calling your name, and barely enough time to think. Every choice matters. What you pick shapes the story.
 
-Every choice you make shapes the narrative, representing the constant negotiation between efficiency and humanity, 
-productivity and self-care, that defines modern student existence.
+🔸 Chat or dash?
+🔸 Noodles or chores?
+🔸 Recharge or rush?
 
-The experience features:
-• Interactive home page with animated clock and preview panels
-• Photo-based storytelling with descriptive captions that resize dynamically
-• Choice-driven narrative that affects the story outcome
-• Real-time countdown timer that adds pressure
-• Slider navigation for smooth story progression
-• Dynamic image loading with fallback support
-• Fully responsive design that works on all devices
+Explore your day through a fast-paced, choice-driven comic with real-time pressure, branching paths, and a few surprises.
 
-RESPONSIVE FEATURES:
-• Panels automatically adjust to image dimensions
-• Content never exceeds viewport boundaries
-• Text sizes scale with screen size
-• Touch-friendly navigation on mobile
-• Landscape/portrait orientation support
+Features:
+• Animated clock & preview panels
+• Responsive photo panels that fit any screen
+• Decisions that actually matter
+• Mobile-ready, keyboard-friendly, stress-enhancing 😅
 
-To add your own images:
-1. Create an 'images' folder in your project directory
-2. Add your photos with the filenames specified in the defineStoryStructure() method
-3. The panels will automatically resize based on your image dimensions!
+Ready?
+Click the clock.
+Beat the timer.
+Live your ten minutes.`;
 
-Navigate using the arrow buttons, click the dots, or use your keyboard arrow keys. 
-Start from the home page by clicking the animated clock or "Begin Your Story" button.`;
         
         this.openModal(aboutText);
     }
@@ -828,15 +809,7 @@ Start from the home page by clicking the animated clock or "Begin Your Story" bu
         
         // Add the next panel(s) to the story path
         this.extendStoryPath(nextPanelId);
-        
-        const narratives = {
-            chat: "You chose human connection over efficiency. The conversation got better and better! But time kept ticking...",
-            rush: "Smart choice! You chose efficiency over socializing and gained precious time.",
-            laundry: "Productivity over pleasure! You tackled the mountain of procrastination.",
-            ramen: "For a moment, everything else faded. No deadlines. No choices. Just noodles."
-        };
 
-        this.showNarrative(narratives[action] || "Your choice echoes through the remaining minutes...");
         this.updateTimerUrgency();
         this.hideChoicePortal(event.target);
         
