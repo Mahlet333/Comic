@@ -217,30 +217,35 @@ class LivingComic {
 
     setupNavigation() {
         // Navigation links
-        document.getElementById('navHome').addEventListener('click', (e) => {
-            e.preventDefault();
-            this.showHome();
-        });
+       document.getElementById('navHome').addEventListener('click', (e) => {
+           e.preventDefault();
+           this.closeModal();       // ← close “About” if it’s open
+          this.showHome();
+      });
 
-        document.getElementById('navComic').addEventListener('click', (e) => {
-            e.preventDefault();
-            this.startComic();
-        });
+       document.getElementById('navComic').addEventListener('click', (e) => {
+          e.preventDefault();
+          this.closeModal();       // ← close “About” if it’s open
+           this.startComic();
+      });   
 
         document.getElementById('navAbout').addEventListener('click', (e) => {
             e.preventDefault();
             this.showAbout();
         });
 
-        document.getElementById('navTeam').addEventListener('click', (e) => {
-            e.preventDefault();
-            this.showTeam();
-        });
+       document.getElementById('navTeam').addEventListener('click', (e) => {
+           e.preventDefault();
+           this.closeModal();       // ← close “About” if it’s open
+           this.showTeam();
+       });
 
-        document.getElementById('navLogo').addEventListener('click', (e) => {
-            e.preventDefault();
-            this.showHome();
-        });
+       document.getElementById('navLogo').addEventListener('click', (e) => {
+           e.preventDefault();
+           this.closeModal();       // ← close “About” if it’s open
+           this.showHome();
+       });
+
 
         // Mobile menu toggle
         document.getElementById('navBurger').addEventListener('click', () => {
@@ -250,34 +255,49 @@ class LivingComic {
 
     // View Management
     showHome() {
-        this.currentView = 'home';
-        if (this.currentBackgroundSound) {
-            this.currentBackgroundSound.pause();
-            this.currentBackgroundSound.currentTime = 0;
-            this.currentBackgroundSound = null; // Reset the current sound
-        }
-        document.getElementById('homePage').classList.add('active');
-        document.getElementById('comicPage').classList.remove('active');
-        document.getElementById('teamPage').classList.remove('active');
-        document.getElementById('timer').style.display = 'none';
-        this.stopTimer();
+   // Always close the About modal before switching away
+    this.closeModal();
+
+    this.currentView = 'home';
+    if (this.currentBackgroundSound) {
+        this.currentBackgroundSound.pause();
+        this.currentBackgroundSound.currentTime = 0;
+        this.currentBackgroundSound = null;
+    }
+    document.getElementById('homePage').classList.add('active');
+    document.getElementById('comicPage').classList.remove('active');
+
+    
+    document.getElementById('teamPage').classList.remove('active');
+    document.getElementById('comicWorld').style.display = 'block';
+    document.getElementById('timer').style.display = 'none';
+    this.stopTimer();
+}
+
+showTeam() {
+    this.currentView = 'team';
+
+    // ◀ Stop any comic audio when switching to Team
+    if (this.currentBackgroundSound) {
+        this.currentBackgroundSound.pause();
+        this.currentBackgroundSound.currentTime = 0;
+        this.currentBackgroundSound = null;
     }
 
-    showTeam() {
-        this.currentView = 'team';
-        if (this.currentBackgroundSound) {
-            this.currentBackgroundSound.pause();
-            this.currentBackgroundSound.currentTime = 0;
-            this.currentBackgroundSound = null; // Reset the current sound
-        }
-        document.getElementById('homePage').classList.remove('active');
-        document.getElementById('comicPage').classList.remove('active');
-        document.getElementById('teamPage').classList.add('active');
-        document.getElementById('timer').style.display = 'none';
-        this.stopTimer();
-        // Generate and display team members when showing the page
-        this.displayTeamMembers();
-    }
+    document.getElementById('homePage').classList.remove('active');
+    document.getElementById('comicPage').classList.remove('active');
+    document.getElementById('comicWorld').style.display = 'none';
+    document.getElementById('teamPage').classList.add('active');
+    document.getElementById('timer').style.display = 'none';
+    this.stopTimer();
+
+    // Generate and display team members
+    this.displayTeamMembers();
+}
+js
+Copy
+Edit
+
 
     showComic() {
         this.currentView = 'comic';
@@ -301,7 +321,13 @@ class LivingComic {
         this.currentView = 'comic';
         document.getElementById('homePage').classList.remove('active');
         document.getElementById('comicPage').classList.add('active');
-        document.getElementById('timer').style.display = 'block';
+
+         document.getElementById('comicWorld').style.display = 'block';
+         document.getElementById('timer').style.display = 'block';
+         
+        document.getElementById('teamPage').classList.remove('active');
+
+        
         
         this.buildInitialStoryPath();
         this.generateSlides();
@@ -859,73 +885,134 @@ class LivingComic {
         setTimeout(() => effect.remove(), 2000);
     }
 
-    showAbout() {
-        const aboutText = `"Ten Minutes" is an interactive photo-comic about the chaos of student life — where ten minutes feels like a lifetime and a blink.
+// --- Replace your current showAbout() with this:
 
-You've got laundry piling up, ramen calling your name, and barely enough time to think. Every choice matters. What you pick shapes the story.
-
-🔸 Chat or dash?
-🔸 Noodles or chores?
-🔸 Recharge or rush?
-
-Explore your day through a fast-paced, choice-driven comic with real-time pressure, branching paths, and a few surprises.
-
-Features:
-• Animated clock & preview panels
-• Responsive photo panels that fit any screen
-• Decisions that actually matter
-• Mobile-ready, keyboard-friendly, stress-enhancing 😅
-
-Ready?
-Click the clock.
-Beat the timer.
-Live your ten minutes.`;
-
-        
-        this.openModal(aboutText);
+showAbout() {
+    // ◀ Stop any comic audio before opening the About modal
+    if (this.currentBackgroundSound) {
+        this.currentBackgroundSound.pause();
+        this.currentBackgroundSound.currentTime = 0;
+        this.currentBackgroundSound = null;
     }
+
+        const aboutHTML = `
+            <div class="modal-about">
+                <p class="modal-intro">"Ten Minutes" is an interactive photo-comic about the chaos of student life — where ten minutes feels like a lifetime and a blink.</p>
+                
+                <p>You've got laundry piling up, ramen calling your name, and barely enough time to think. Every choice matters. What you pick shapes the story.</p>
+                
+                <div class="choice-highlights">
+                    <p class="choice-item"><span class="choice-icon">⚡</span> Chat or dash?</p>
+                    <p class="choice-item"><span class="choice-icon">🍜</span> Noodles or chores?</p>
+                    <p class="choice-item"><span class="choice-icon">💨</span> Recharge or rush?</p>
+                </div>
+
+                <p><strong>Explore your day through a fast-paced, choice-driven comic with real-time pressure, branching paths, and a few surprises.</strong></p>
+
+                <h3>Features:</h3>
+                <div class="features-list">
+                    <p class="feature-item"><span class="feature-bullet">★</span> Animated clock & preview panels</p>
+                    <p class="feature-item"><span class="feature-bullet">★</span> Responsive photo panels that fit any screen</p>
+                    <p class="feature-item"><span class="feature-bullet">★</span> Decisions that actually matter</p>
+                    <p class="feature-item"><span class="feature-bullet">★</span> Mobile-ready, keyboard-friendly, stress-enhancing 😅</p>
+                </div>
+
+                <div class="ready-section">
+                    <p class="ready-text">Ready?</p>
+                    <p class="ready-text">Click the clock.</p>
+                    <p class="ready-text">Beat the timer.</p>
+                    <p class="ready-text"><strong>Live your ten minutes.</strong></p>
+                </div>
+            </div>
+        `;
+        
+    document.getElementById('modalText').innerHTML = aboutHTML;
+    document.getElementById('storyModal').classList.add('active');
+}
 
     // Team Page Management
-    displayTeamMembers() {
-        const teamMembersContainer = document.getElementById('team-members-container');
-        // Clear existing members to avoid duplicates if the function is called multiple times
-        if (teamMembersContainer) {
-            teamMembersContainer.innerHTML = ''; 
-        }
+// Replace the displayTeamMembers() function in your script.js file
+// Find the existing function (around line 600+) and replace it with this enhanced version
 
-        const teamMembers = [
-            { name: 'Kayesu', role: 'Grand Commander', image: 'images/team/bart.png', gender: 'male' },
-            { name: 'Alisa', role: 'The ArchMage', image: 'images/team/mickey.png', gender: 'female' },
-            { name: 'Ali', role: 'The White Knight', image: 'images/team/spongebob.png', gender: 'male' },
-            { name: 'Nuri', role: 'The ArchMaester', image: 'images/team/tweety.png', gender: 'female' }
+// Replace the displayTeamMembers() function in your script.js file
+// This version has much shorter, punchier bios that will look better
+
+// Team Page Management
+displayTeamMembers() {
+    const teamMembersContainer = document.querySelector('.team-members-container');
+    if (teamMembersContainer) {
+        teamMembersContainer.innerHTML = ''; 
+    }
+
+    // ====== CUSTOMIZE YOUR TEAM MEMBERS HERE ======
+    // Keep bios SHORT (under 60 characters) for best visual results
+            const teamMembers = [
+            {
+                name: 'Irem Naz Celen',
+                role: 'Creative Director',
+                image: 'images/team/naz.png',
+                bio: 'Storyteller who turns chaos into compelling narratives.'
+            },
+            {
+                name: 'Abdelrahman Khater',
+                role: 'Lead Developer',
+                image: 'images/team/khater.png',
+                bio: 'Code wizard bringing interactive stories to life.'
+            },
+            {
+                name: 'Mahlet Atrsaw',
+                role: 'Visual Designer',
+                image: 'images/team/mahlet.png',
+                bio: 'Comic artist creating visual magic panel by panel.'
+            },
+            {
+                name: 'Ahmed Bilal',
+                role: 'UX Researcher',
+                image: 'images/team/bilal.png',
+                bio: 'User advocate ensuring every choice feels right.'
+            }
         ];
 
-        teamMembers.forEach(member => {
-            const memberElement = document.createElement('div');
-            memberElement.className = 'team-member';
+    teamMembers.forEach(member => {
+        const memberElement = document.createElement('div');
+        memberElement.className = 'team-member';
 
-            const imgElement = document.createElement('img');
-            imgElement.className = 'team-member-image';
-            imgElement.src = member.image;
-            imgElement.alt = member.name;
+        // Create member image with better error handling
+        const imgElement = document.createElement('img');
+        imgElement.className = 'team-member-image';
+        imgElement.src = member.image;
+        imgElement.alt = member.name;
+        imgElement.onerror = function() {
+            // Fallback placeholder if image is missing
+            this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiNmZjZiMzUiLz4KPHN2ZyB4PSIyNSIgeT0iMjAiIHdpZHRoPSIzMCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik0xMiA0YTQgNCAwIDAgMSA0IDR2MmE0IDQgMCAwIDEtOCAwVjhhNCA0IDAgMCAxIDQtNHptNiAxMmE2IDYgMCAwIDEtMTIgMCIvPgo8L3N2Zz4KPC9zdmc+';
+        };
 
-            const nameElement = document.createElement('div');
-            nameElement.className = 'team-member-name';
-            nameElement.textContent = member.name;
+        // Create member name
+        const nameElement = document.createElement('div');
+        nameElement.className = 'team-member-name';
+        nameElement.textContent = member.name;
 
-            const roleElement = document.createElement('div');
-            roleElement.className = 'team-member-role';
-            roleElement.textContent = member.role;
+        // Create member role
+        const roleElement = document.createElement('div');
+        roleElement.className = 'team-member-role';
+        roleElement.textContent = member.role;
 
-            memberElement.appendChild(imgElement);
-            memberElement.appendChild(nameElement);
-            memberElement.appendChild(roleElement);
+        // Create member bio
+        const bioElement = document.createElement('div');
+        bioElement.className = 'team-member-bio';
+        bioElement.textContent = member.bio;
 
-            if (teamMembersContainer) {
-                teamMembersContainer.appendChild(memberElement);
-            }
-        });
-    }
+        // Assemble the member element
+        memberElement.appendChild(imgElement);
+        memberElement.appendChild(nameElement);
+        memberElement.appendChild(roleElement);
+        memberElement.appendChild(bioElement);
+
+        if (teamMembersContainer) {
+            teamMembersContainer.appendChild(memberElement);
+        }
+    });
+}
 
     makeChoice(action, nextPanelId, event) {
         this.choices.push(action);
@@ -1024,29 +1111,43 @@ Live your ten minutes.`;
         }
     }
 
-    handleTimeUp() {
-        clearInterval(this.timerInterval);
-        this.shakeWorld();
-        
-        setTimeout(() => {
-            this.openModal("TIME'S UP! The bell rings, another class begins, and the cycle continues. Ten minutes gone, but the memory of choices lingers. In student life, time doesn't stop for decisions - decisions stop time.");
-        }, 1000);
-    }
+handleTimeUp() {
+  clearInterval(this.timerInterval);
+  this.shakeWorld();
 
-    restart() {
-        location.reload();
-    }
+  setTimeout(() => {
+    // 1) Show the "Time's Up" modal
+    this.openModal(
+      "TIME'S UP! The bell rings, another class begins, and the cycle continues. Ten minutes gone, but the memory of choices lingers. In student life, time doesn't stop for decisions – decisions stop time."
+    );
 
-    toggleFullscreen() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-        } else {
-            document.exitFullscreen();
-        }
+    // 2) Force the Restart button to display above everything
+    const restartBtn = document.getElementById('restartBtn');
+    if (restartBtn) {
+      // a) Add the "showing" class so our CSS fixes take effect
+      restartBtn.classList.add('showing');
+      // b) Unhide and bring its parent container to the front
+      const controls = restartBtn.parentElement;        // .comic-controls
+      controls.style.display = 'flex';                  // override “display: none”
+      controls.style.zIndex   = '3000';                 // float above modal
     }
+  }, 1000);
 }
+
+restart() {
+    location.reload();
+}
+
+toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
+}}
 
 // Initialize the living comic once the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
     new LivingComic();
 });
+

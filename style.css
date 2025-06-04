@@ -30,6 +30,7 @@ body {
     transform: translateY(-100%);
     animation: slideDownNav 1s ease 1.5s forwards;
     height: 80px; /* Fixed height for calculations */
+    
 }
 
 @keyframes slideDownNav {
@@ -119,19 +120,27 @@ body {
 /* HOME PAGE STYLES */
 .home-page {
     position: absolute;
-    top: 0;
+    top: 50px;        /* Increased from 80px to 100px for extra breathing room */
     left: 0;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 100px); /* Adjusted to match new top offset */
     display: flex;
-    align-items: center;
+    align-items: flex-start;      /* Align at top so content doesn’t center vertically */
     justify-content: center;
+    padding-top: 20px;            /* Add padding so content isn’t flush against the 100px top */
     opacity: 0;
     transform: translateY(50px);
     transition: all 0.8s ease;
     pointer-events: none;
     z-index: 100;
 }
+
+/* Ensure the inner container doesn’t get clipped when zoomed */
+.home-page .home-content {
+    max-width: 1100px; /* Limit width, but allow some side margins */
+    margin-top: 20px;  /* Extra gap below navbar */
+}
+
 
 .home-page.active {
     opacity: 1;
@@ -494,27 +503,25 @@ body {
     justify-content: center;
     margin: 0 auto;
     
-    /* CRITICAL: Responsive constraints that prevent overflow */
-    /* Allow the panel to take up almost the full viewport, prioritizing image aspect ratio */
-    width: clamp(300px, 98vw, 2000px); /* Very large max width */
-    max-width: calc(100vw - 20px); /* Minimal padding constraint */
-    height: auto; /* Height will be determined by content and width/aspect ratio */
-    min-height: clamp(200px, 60vh, 1000px); /* Very large minimum height */
-    max-height: calc(100vh - 60px); /* Minimal UI space needed */
+    /* FIXED: Conservative desktop sizing, responsive mobile scaling */
+    width: clamp(320px, 95vw, 2000px); /* Desktop stays large, mobile scales down */
+    max-width: calc(100vw - 20px);
+    height: auto;
+    min-height: clamp(400px, 75vh, 1000px); /* Conservative desktop, responsive mobile */
+    max-height: calc(100vh - 40px);
     
-    /* Ensure content fits */
     box-sizing: border-box;
 }
 
 .comic-panel:hover {
-    transform: scale(1.02); /* Reduced scale to prevent overflow */
+    transform: scale(1.02);
     z-index: 100;
     box-shadow: 
         0 30px 60px rgba(0, 0, 0, 0.4),
         0 0 40px rgba(255, 193, 7, 0.3);
 }
 
-/* PANEL CONTENT - RESPONSIVE CONTAINER */
+/* PANEL CONTENT - CONSERVATIVE DESKTOP SIZING */
 .panel-content {
     width: 100%;
     height: 100%;
@@ -523,12 +530,12 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
+    padding: 1rem; /* Fixed padding for desktop */
     box-sizing: border-box;
-    overflow: hidden; /* Prevent content from spilling out */
+    overflow: visible;
 }
 
-/* PHOTO CONTAINER - NOW PROPERLY CONSTRAINED */
+/* PHOTO CONTAINER - DESKTOP OPTIMIZED */
 .photo-container {
     position: relative;
     display: flex;
@@ -537,14 +544,14 @@ body {
     justify-content: center;
     width: 100%;
     height: 100%;
-    min-height: 200px;
-    max-height: 100%; /* Critical constraint */
+    min-height: 200px; /* Conservative for desktop */
+    max-height: 100%;
     box-sizing: border-box;
 }
 
 .comic-image {
     max-width: 100%;
-    max-height: calc(100% - 120px); /* Reserve space for caption */
+    max-height: calc(100% - 80px); /* Desktop: keep original ratio */
     width: auto;
     height: auto;
     border: 3px solid #000;
@@ -553,20 +560,20 @@ body {
         5px 5px 0px rgba(0, 0, 0, 0.3),
         inset 0 0 20px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
-    object-fit: contain; /* Changed from cover to contain */
+    object-fit: contain;
     margin-bottom: 1rem;
-    flex-shrink: 0; /* Prevent shrinking */
+    flex-shrink: 0;
 }
 
 .comic-image:hover {
-    transform: scale(1.01) rotate(1deg); /* Reduced scale */
+    transform: scale(1.01) rotate(1deg);
     box-shadow: 
         7px 7px 0px rgba(0, 0, 0, 0.3),
         inset 0 0 30px rgba(0, 0, 0, 0.15),
         0 0 20px rgba(255, 107, 53, 0.3);
 }
 
-/* FALLBACK PLACEHOLDER - PROPERLY SIZED */
+/* PLACEHOLDER - DESKTOP OPTIMIZED */
 .photo-placeholder {
     position: relative;
     background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
@@ -582,17 +589,17 @@ body {
     transition: all 0.3s ease;
     cursor: pointer;
     
-    /* Responsive sizing */
-    width: clamp(250px, 60vw, 400px);
-    height: clamp(150px, 30vh, 300px);
+    /* Conservative desktop sizing */
+     width: clamp(300px, 85vw, 400px); /* Increased from 250px and 60vw */
+    height: clamp(250px, 45vh, 300px); /* Increased from 150px and 30vh */
     max-width: 100%;
-    max-height: calc(100% - 120px); /* Reserve space for caption */
+    max-height: calc(100% - 80px); 
     margin-bottom: 1rem;
     flex-shrink: 0;
 }
 
 .photo-placeholder:hover {
-    transform: scale(1.01) rotate(1deg); /* Reduced scale */
+    transform: scale(1.01) rotate(1deg);
     box-shadow: 
         7px 7px 0px rgba(0, 0, 0, 0.3),
         inset 0 0 30px rgba(0, 0, 0, 0.15),
@@ -601,15 +608,16 @@ body {
 
 .photo-placeholder::before {
     content: '📷';
-    font-size: clamp(2rem, 5vw, 3rem); /* Responsive icon size */
+    font-size: clamp(2rem, 5vw, 3rem);
     margin-bottom: 0.5rem;
     opacity: 0.6;
 }
 
-/* CAPTION - PROPERLY CONSTRAINED */
+/* SIMPLE FIX: Remove text truncation constraints from image captions */
+
 .image-caption {
     font-family: 'Architects Daughter', cursive;
-    font-size: clamp(0.9rem, 2vw, 1.1rem); /* Responsive font size */
+    font-size: 1.1rem; /* Keep normal size for desktop */
     color: #333;
     text-align: center;
     padding: 0.8rem 1rem;
@@ -623,22 +631,13 @@ body {
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     animation: subtleFloat 3s ease-in-out infinite;
     
-    /* Responsive constraints */
     max-width: 100%;
     min-height: 60px;
-    max-height: 120px; /* Prevent caption from being too tall */
-    overflow: hidden;
     flex-shrink: 0;
-    
-    /* Text overflow handling */
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4; /* Limit to 4 lines */
-    text-overflow: ellipsis;
 }
 
 .image-caption:hover {
-    transform: translateY(-2px) scale(1.01) rotate(-0.5deg); /* Reduced scale */
+    transform: translateY(-2px) scale(1.01) rotate(-0.5deg);
     box-shadow: 
         5px 5px 0px rgba(0, 0, 0, 0.4),
         0 15px 35px rgba(0, 0, 0, 0.3),
@@ -647,12 +646,12 @@ body {
     animation: hoverBounce 0.6s ease-in-out;
 }
 
-/* IMAGE LOADING STATE - RESPONSIVE */
+/* LOADING STATE - DESKTOP OPTIMIZED */
 .image-loading {
-    width: clamp(250px, 60vw, 400px);
-    height: clamp(150px, 30vh, 300px);
+    width: clamp(300px, 85vw, 400px);
+    height: clamp(250px, 45vh, 300px);
     max-width: 100%;
-    max-height: calc(100% - 120px);
+    max-height: calc(100% - 80px);
     background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
     border: 3px solid #000;
     border-radius: 15px;
@@ -666,16 +665,16 @@ body {
 .image-loading::after {
     content: "Loading...";
     font-family: 'Architects Daughter', cursive;
-    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    font-size: 1.2rem; /* Static for desktop */
     color: #666;
 }
 
-/* IMAGE ERROR STATE - RESPONSIVE */
+/* ERROR STATE - DESKTOP OPTIMIZED */
 .image-error {
-    width: clamp(250px, 60vw, 400px);
-    height: clamp(150px, 30vh, 300px);
+    width: clamp(300px, 85vw, 400px);
+    height: clamp(250px, 45vh, 300px);
     max-width: 100%;
-    max-height: calc(100% - 120px);
+    max-height: calc(100% - 80px);
     background: linear-gradient(135deg, #ffebee, #ffcdd2);
     border: 3px solid #d32f2f;
     border-radius: 15px;
@@ -689,19 +688,163 @@ body {
 
 .image-error::before {
     content: "📷";
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-size: 3rem; /* Static for desktop */
     opacity: 0.5;
     margin-bottom: 0.5rem;
 }
 
+
+@keyframes modalPopIn {
+    0% { 
+        transform: scale(0.8) rotate(-2deg);
+        opacity: 0;
+    }
+    100% { 
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+/* Modal Content Styling */
+.modal-about {
+    width: 100%;
+    text-align: center;
+}
+
+.modal-intro {
+    font-style: italic;
+    color: #ff6b35;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 1.5rem;
+    text-shadow: 1px 1px 0px rgba(0,0,0,0.1);
+    background: rgba(255, 107, 53, 0.1);
+    padding: 1rem;
+    border-radius: 15px;
+    border: 2px solid rgba(255, 107, 53, 0.3);
+}
+
+.choice-highlights {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: rgba(255, 152, 0, 0.1);
+    border-radius: 20px;
+    border: 3px solid rgba(255, 152, 0, 0.3);
+    transform: rotate(-1deg);
+}
+
+.choice-item {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 1.3em;
+    margin: 0.8rem 0;
+    color: #2c3e50;
+    text-shadow: 1px 1px 0px rgba(255,107,53,0.3);
+}
+
+.choice-icon {
+    display: inline-block;
+    margin-right: 10px;
+    font-size: 1.2em;
+    transform: rotate(-5deg);
+}
+
+.modal-about h3 {
+    font-family: 'Permanent Marker', cursive;
+    color: #ff6b35;
+    text-shadow: 3px 3px 0px #000;
+    font-size: 1.6em;
+    margin: 2rem 0 1rem 0;
+    transform: rotate(-2deg);
+    text-align: center;
+}
+
+.features-list {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    border-radius: 15px;
+    border: 2px dashed rgba(255, 107, 53, 0.4);
+    margin: 1rem 0 2rem 0;
+}
+
+.feature-item {
+    text-align: left;
+    margin: 1rem 0;
+    padding-left: 2rem;
+    position: relative;
+    font-size: 1.1em;
+}
+
+.feature-bullet {
+    position: absolute;
+    left: 0;
+    color: #ff6b35;
+    font-size: 1.3em;
+    text-shadow: 2px 2px 0px #000;
+    transform: rotate(-15deg);
+    animation: starTwinkle 2s ease-in-out infinite;
+}
+
+.ready-section {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 152, 0, 0.1));
+    border-radius: 20px;
+    border: 3px solid #ff6b35;
+    transform: rotate(1deg);
+}
+
+.ready-text {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 1.3em;
+    color: #2c3e50;
+    text-shadow: 1px 1px 0px rgba(255,107,53,0.3);
+    margin: 0.5rem 0;
+}
+
+@keyframes starTwinkle {
+    0%, 100% { 
+        transform: rotate(-15deg) scale(1);
+        color: #ff6b35;
+    }
+    50% { 
+        transform: rotate(-10deg) scale(1.2);
+        color: #ff9800;
+    }
+}
+
+.modal-content h1,
+.modal-content h2,
+.modal-content h3 {
+    font-family: 'Permanent Marker', cursive;
+    color: #ff6b35;
+    text-shadow: 2px 2px 0px #000;
+    margin: 1.5rem 0 1rem 0;
+    text-align: center;
+    transform: rotate(-1deg);
+}
+
+.modal-content p {
+    margin: 1rem 0;
+    text-align: center;
+    max-width: 100%;
+}
+
+.modal-content strong {
+    color: #ff6b35;
+    font-weight: bold;
+    text-shadow: 1px 1px 0px rgba(0,0,0,0.1);
+}
+
 #modalText {
     white-space: pre-wrap;
+    width: 100%;
+    text-align: center;
 }
 
 .image-error::after {
     content: "Image not found";
     font-family: 'Architects Daughter', cursive;
-    font-size: clamp(0.8rem, 2vw, 1rem);
+    font-size: 1rem; /* Static for desktop */
     color: #666;
 }
 
@@ -909,42 +1052,44 @@ body {
 
 /* INTERACTIVE ELEMENTS - RESPONSIVE */
 .choice-portal {
-    /* Remove absolute positioning */
-    /* position: absolute; */
-    /* top: 50%; */
-    /* left/right: 5%; */
-    /* transform: translateY(-50%); */
-    
-    /* Display and layout adjustments */
-    display: inline-block; /* or flex */
-    margin: 10px; /* Add some space around the buttons */
-    vertical-align: top; /* Align nicely if using inline-block */
-
-    border: 3px solid #ff6b35; /* Orange border */
-    background-color: rgba(255, 107, 53, 0.8); /* Semi-transparent orange background */
-    color: #fff; /* White text */
-    padding: 8px 15px; /* Reduced padding inside the portal */
-    border-radius: 20px; /* Slightly smaller rounded corners */
-    font-family: 'Permanent Marker', cursive; /* Comic-like font */
-    font-size: 1.0rem; /* Reduced font size */
+    display: inline-block;
+    margin: clamp(5px, 1.5vw, 15px);
+    border: 4px solid #ff6b35;
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.95), rgba(255, 152, 0, 0.9));
+    color: #fff;
+    padding: clamp(12px, 3vw, 18px) clamp(16px, 4vw, 25px); /* FIXED: More responsive padding */
+    border-radius: 25px;
+    font-family: 'Permanent Marker', cursive;
+    font-size: clamp(1.2rem, 4vw, 1.8rem); /* FIXED: Much better responsive font sizing */
+    font-weight: bold;
     text-align: center;
     cursor: pointer;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2); /* Reduced shadow */
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
-    z-index: 10; /* Ensure it's above the image */
-    min-width: auto; /* Remove minimum width */
-    /* Styles to make it look like a bubbly shape */
+    z-index: 10;
+    min-width: clamp(120px, 25vw, 200px); /* FIXED: Better responsive min-width */
+    max-width: clamp(180px, 40vw, 280px); /* FIXED: Better responsive max-width */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
-    animation: portalPulse 2s infinite;
+    animation: portalPulse 2.5s infinite ease-in-out;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.2;
 }
 
 .choice-container {
     display: flex;
-    justify-content: center; /* Center the buttons horizontally */
-    margin-top: 20px; /* Add space above the buttons */
-    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
-    gap: 15px; /* Space between buttons */
-    width: 100%; /* Ensure container takes full width */
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: clamp(15px, 4vw, 25px); /* FIXED: Responsive gap */
+    width: 100%;
+    position: absolute;
+    bottom: clamp(15px, 5vh, 30px); /* FIXED: More responsive positioning */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    padding: 0 clamp(10px, 3vw, 30px); /* FIXED: Responsive padding */
+    box-sizing: border-box;
 }
 
 .choice-portal:hover {
@@ -961,23 +1106,27 @@ body {
 /* NARRATIVE BOX - RESPONSIVE */
 .narrative-box {
     position: absolute;
-    bottom: 100px; /* Keep bottom fixed relative to parent */
+    bottom: 100px;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(0, 0, 0, 0.9);
     color: white;
-    padding: clamp(15px, 3vw, 20px) clamp(20px, 4vw, 30px); /* Responsive padding */
+    padding: clamp(15px, 3vw, 25px) clamp(20px, 4vw, 35px);
     border: 3px solid #ff6b35;
     border-radius: 15px;
-    max-width: 80%;
+    max-width: clamp(300px, 85vw, 600px); /* FIXED: Better max-width */
+    min-width: 280px; /* FIXED: Ensure minimum readable width */
     font-family: 'Architects Daughter', cursive;
-    font-size: 0.5rem; /* Test: Very small fixed font size */
-    line-height: 1.5;
+    font-size: clamp(1rem, 3.5vw, 1.4rem); /* FIXED: Much larger and more responsive font size */
+    line-height: clamp(1.4, 1.6, 1.8); /* FIXED: Better line height scaling */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     opacity: 0;
     transform: translateX(-50%) translateY(100px);
     transition: all 0.6s ease;
     z-index: 400;
+    text-align: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .narrative-box.active {
@@ -1093,7 +1242,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.95);
+    background: rgba(26, 26, 26, 0.95);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1109,47 +1258,65 @@ body {
 }
 
 .modal-content {
-    background: #f5f5dc;
-    border: 8px solid #000;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(255, 193, 7, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 87, 34, 0.1) 0%, transparent 50%),
+        #f5f5dc;
+    /* ================== UPDATED BORDER ================== */
+    /* Use a thick two-tone border plus an inset “frame” highlight */
+    border: 6px solid #ff6b35;                        /* Outer, bright border */
+    box-shadow:
+        0 0 0 4px #000,                               /* Inner black framing line */
+        0 20px 60px rgba(0, 0, 0, 0.5),               /* Outer drop shadow */
+        inset 0 0 30px rgba(255, 107, 53, 0.1);       /* Subtle inner glow */
     border-radius: 20px;
-    width: clamp(300px, 90vw, 800px); /* Responsive width */
-    height: clamp(200px, 80vh, 80vh); /* Responsive height */
+    width: clamp(300px, 90vw, 800px);
+    height: clamp(200px, 80vh, 80vh);
     padding: 2rem;
     position: relative;
     overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-    font-size: clamp(0.9rem, 2vw, 1rem); /* Responsive font size */
-    /* Center content within modal */
+    font-family: 'Architects Daughter', cursive;
+    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+    line-height: 1.6;
+    color: #2c3e50;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    text-align: center;
+    justify-content: flex-start;
+    text-align: left;
+    animation: modalPopIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .modal-close {
     position: absolute;
-    top: 15px;
-    right: 20px;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    font-size: 1.2rem;
     background: #ff4444;
-    color: white;
-    border: 3px solid #000;
+    color: #fff;
+    border: none;
     border-radius: 50%;
-    width: clamp(35px, 6vw, 40px); /* Responsive size */
-    height: clamp(35px, 6vw, 40px);
-    font-size: clamp(1.2rem, 2.5vw, 1.5rem); /* Responsive font size */
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Permanent Marker', cursive;
-    z-index: 10; /* Ensure it's above modal content */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s ease, background 0.2s ease;
 }
+
+.modal-close:hover {
+    background: #e33333;
+    transform: scale(1.1);
+}
+
+.modal-close:active {
+    transform: scale(0.9);
+}
+
 
 /* COMPREHENSIVE RESPONSIVE DESIGN */
 @media (max-width: 768px) {
     .comic-world {
-        padding: 60px 10px 80px 60px; /* Adjusted padding for mobile */
+        padding: 60px 5px 80px 60px 40px; /* Adjusted padding for mobile */
          /* Adjust padding when sidebar is active */
         &.sidebar-active {
             padding-left: calc(60px + 350px); /* Sidebar width + original padding */
@@ -1157,6 +1324,18 @@ body {
         }
     }
     
+        .image-caption {
+        /* Adjust caption to take less space */
+        font-size: 0.9rem; /* Increased from 0.75rem */
+        padding: 0.5rem 0.8rem; /* More generous padding */
+        min-height: 40px; /* Reasonable minimum */
+    }
+    
+    .comic-image {
+        max-height: calc(100% - 60px); /* Mobile: much less space reserved for caption */
+        margin-bottom: 0.2rem; /* Minimal gap */
+    }
+
     .comic-navbar {
         height: 60px; /* Smaller navbar on mobile */
         padding: 10px 20px; /* Adjusted padding */
@@ -1286,7 +1465,9 @@ body {
 
     /* Ensure comic panel is not hidden by sidebar */
     .comic-panel {
-        /* Adjust left margin when sidebar is active */
+         min-height: 50vh; /* Ensure at least half viewport height */
+        width: 92vw; /* Use more of viewport width */
+        max-width: calc(100vw - 10px); /* Adjust left margin when sidebar is active */
         &.sidebar-active {
             margin-left: calc(auto + 350px); /* Shift right by sidebar width */
         }
@@ -1303,12 +1484,32 @@ body {
 
 @media (max-width: 480px) {
     .comic-world {
-        padding: 60px 5px 70px 50px; /* Further adjusted padding */
+        padding: 60px 2px 50px 30px; /* Further adjusted padding */
          /* Adjust padding when sidebar is active */
         &.sidebar-active {
             padding-left: calc(50px + 300px); /* Sidebar width + original padding */
              padding-top: 0; /* Set top padding to 0 when sidebar is active */
         }
+    }
+
+     .comic-panel {
+        /* Maximum size for small screens */
+        min-height: 45vh; /* Slightly smaller but still substantial */
+        width: 96vw; /* Use almost full width */
+        max-width: calc(100vw - 4px); /* Minimal margins */
+    }
+
+
+.image-caption {
+        font-size: 0.85rem; /* Reasonable text size */
+        padding: 0.4rem 0.6rem;
+        line-height: 1.2;
+        min-height: 35px;
+        
+        
+    .comic-image {
+        max-height: calc(100% - 40px); /* Even less space for caption */
+        margin-bottom: 0.1rem;
     }
 
     .comic-navbar {
@@ -1402,11 +1603,9 @@ body {
     }
     
     .comic-panel {
-        max-height: calc(100vh - 140px); /* More height in landscape */
-        /* Adjust left margin when sidebar is active */
-        &.sidebar-active {
-            margin-left: calc(auto + 200px); /* Shift right by sidebar width */
-        }
+        min-height: clamp(300px, 60vh, 800px);/* Use most of the height */
+        max-height: calc(100vh - 30px); /* Minimal top/bottom margins */
+    }
     }
     
     .narrative-box {
@@ -1427,14 +1626,9 @@ body {
      }
 
      /* Further adjustments for very short landscape screens */
-    .comic-world {
-        padding-top: 50px; /* Reduce padding for short screens */
-        padding-bottom: 50px;
-         /* Adjust padding when sidebar is active */
-         &.sidebar-active {
-            padding-left: calc(80px + 200px); /* Sidebar width + original padding */
-         }
-    }
+     .comic-world {
+        padding: 50px 60px 40px 60px;
+     }
 
     .comic-navbar {
         height: 50px;
@@ -1531,6 +1725,7 @@ body {
 }
 
 /* TEAM PAGE STYLES */
+/* TEAM PAGE CONTAINER */
 .team-page {
     display: none; /* Hidden by default */
     position: absolute;
@@ -1538,99 +1733,259 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    /* Updated background and text color to match home page */
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    /* Dim, atmospheric background to match comic world */
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(255, 193, 7, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 87, 34, 0.15) 0%, transparent 50%),
+        linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
     color: #fff;
-    overflow-y: auto;
-    padding: 80px 20px 20px 20px; /* Space for fixed navbar */
+    overflow-y: auto;          /* Scroll if content overflows */
+    padding: 100px 40px 40px 40px; /* Leave room for navbar */
     box-sizing: border-box;
-    text-align: center;
-    z-index: 50; /* Below navbar, above other content when active */
+    z-index: 50;
 }
 
 .team-page.active {
-    display: flex; /* Use flex to center content easily */
+    display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Align content to top after padding */
+    justify-content: flex-start; /* Start content at top */
 }
 
+/* TEAM CONTENT BOX (centered flex column) */
 .team-content {
-    max-width: 900px; /* Limit width for readability */
+    max-width: 1400px;
+    width: 100%;
     margin: 0 auto;
-    padding: 2rem; /* Increased padding to match home-description */
-    box-sizing: border-box;
-    /* Added background, border, and shadow to match home-description */
-    background: rgba(0, 0, 0, 0.8);
-    border: 3px solid #ff6b35;
+    padding: 2rem;
+    background: linear-gradient(to bottom, #fff6e0, #fce3b3);
+    border: 3px solid #ff6b35;      /* Bright accent */
     border-radius: 20px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    text-align: center;
 }
 
+/* TITLE AND SUBTITLE */
 .team-title {
-    font-family: 'Permanent Marker', cursive; /* Changed font to match main-title */
-    font-size: clamp(2rem, 5vw, 2.5rem); /* Adjusted size */
+    font-family: 'Permanent Marker', cursive;
+    font-size: clamp(2.5rem, 6vw, 4rem);
     margin-bottom: 10px;
-    color: #ff6b35; /* Changed color to match main-title */
+    color: #ff6b35;
     text-shadow: 
-        3px 3px 0px #000,
-        -1px -1px 0px #000,
-        1px -1px 0px #000,
-        -1px 1px 0px #000; /* Added text shadow */
+        4px 4px 0px #000,
+        -2px -2px 0px #000,
+        2px -2px 0px #000,
+        -2px 2px 0px #000;
+    transform: rotate(-2deg);
 }
 
 .team-subtitle {
-    font-family: 'Architects Daughter', cursive; /* Changed font to match subtitle */
-    font-size: clamp(1rem, 2.5vw, 1.2rem); /* Adjusted size */
-    margin-bottom: 40px;
-    color: #fff; /* Changed color to match subtitle */
+    font-family: 'Architects Daughter', cursive;
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    margin-bottom: 50px;
+    color: #fff;
     background: rgba(0, 0, 0, 0.7);
-    padding: 1rem 2rem;
+    padding: 1.5rem 3rem;
     border: 3px solid #ff6b35;
     border-radius: 25px;
-    display: inline-block;
     transform: rotate(1deg);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: inline-block; /* ensures transform/box-shadow behave */
+  transform-origin: center center;
 }
 
+/* GRID LAYOUT FOR TEAM MEMBERS */
 .team-members-container {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 0.2rem;
+    width: 100%;
+    background: linear-gradient(to bottom, #fff6e0, #fce3b3);
+
+    /* ← NEW: Center the entire grid if there’s “empty space” on a row */
     justify-content: center;
-    gap: 40px; /* Space between team members */
-    margin-top: 30px; /* Add space below subtitle */
+
+    /* ← NEW: Center each card inside its grid cell */
+    justify-items: center;
 }
 
+
+/* INDIVIDUAL MEMBER CARD */
 .team-member {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    /* Adjusted width for better responsiveness */
-    width: 100%; /* Allow to take full width on small screens */
-    max-width: 150px; /* Maintain a max width */
+    background: rgba(0, 0, 0, 0.6);
+    border: 4px solid #ff6b35;
+    border-radius: 25px;
+    padding: 35px 25px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    transform: rotate(0deg);
+    min-height: 420px;
+    position: relative;
+    overflow: hidden;
 }
 
+.team-member {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.team-member:hover {
+  transform: scale(1.02) rotateZ(-1deg);
+  box-shadow: 0 10px 20px rgba(255, 107, 53, 0.3);
+}
+
+/* Slight comic-style tilt on odd/even cards */
+.team-member:nth-child(odd) {
+    transform: rotate(-1deg);
+}
+.team-member:nth-child(even) {
+    transform: rotate(1deg);
+}
+
+.team-member:hover {
+    transform: rotate(0deg) scale(1.05);
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(255, 107, 53, 0.4);
+    background: rgba(0, 0, 0, 0.8);
+    border-color: #ffc107;
+}
+
+/* Subtle “comic-book” shine effect */
+.team-member::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+    transform: rotate(45deg);
+    transition: all 0.5s ease;
+    opacity: 0;
+}
+.team-member:hover::before {
+    opacity: 1;
+    animation: shine 1s ease;
+}
+
+/* MEMBER PORTRAIT */
 .team-member-image {
-    width: 120px; /* Size of the circular image */
+    width: 120px;
     height: 120px;
     border-radius: 50%;
-    object-fit: cover; /* Ensure image covers the circle */
-    margin-bottom: 10px;
-    border: 5px solid #000; /* Changed border to match other components */
-    box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3); /* Added box shadow */
+    object-fit: cover;
+    margin-bottom: 20px;
+    border: 5px solid #000;
+    box-shadow: 
+        5px 5px 0px rgba(0, 0, 0, 0.4),
+        0 0 25px rgba(255, 107, 53, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+.team-member:hover .team-member-image {
+    box-shadow: 
+        7px 7px 0px rgba(0, 0, 0, 0.5),
+        0 0 35px rgba(255, 107, 53, 0.5);
+    transform: scale(1.1);
 }
 
+/* MEMBER NAME & ROLE */
 .team-member-name {
-    font-family: 'Permanent Marker', cursive; /* Changed font */
-    font-size: 1.2em;
-    color: #ff6b35; /* Changed color */
-    margin-bottom: 5px;
-    text-shadow: 1px 1px 0px #000; /* Added text shadow */
+    font-family: 'Permanent Marker', cursive;
+    font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+    color: #ff6b35;
+    margin-bottom: 10px;
+    text-shadow: 3px 3px 0px #000;
+    transform: rotate(-1deg);
+    line-height: 1.2;
+    position: relative;
+    z-index: 2;
 }
 
 .team-member-role {
-    font-family: 'Architects Daughter', cursive; /* Changed font */
-    font-size: 0.9em;
-    color: #fff; /* Changed color */
+    font-family: 'Architects Daughter', cursive;
+    font-size: clamp(1.1rem, 2vw, 1.3rem);
+    color: #ffc107;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.7);
+    line-height: 1.2;
+    position: relative;
+    z-index: 2;
+}
+
+/* MEMBER BIO */
+.team-member-bio {
+    font-family: 'Architects Daughter', cursive;
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    color: #fff;
+    line-height: 1.5;
+    text-align: center;
+    background: rgba(255, 107, 53, 0.15);
+    padding: 20px 18px;
+    border-radius: 15px;
+    border: 3px dashed rgba(255, 107, 53, 0.4);
+    margin-top: 15px;
+    position: relative;
+    z-index: 2;
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 768px) {
+    .team-content {
+        padding: 2rem;
+    }
+    .team-members-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        max-width: 400px;
+    }
+    .team-member {
+        min-height: 380px;
+        padding: 30px 20px;
+    }
+    .team-member-image {
+        width: 100px;
+        height: 100px;
+    }
+    .team-member-bio {
+        max-width: 260px;
+    }
+}
+@media (max-width: 480px) {
+    .team-page {
+        padding: 80px 20px 20px 20px;
+    }
+    .team-content {
+        padding: 1.5rem;
+    }
+    .team-member {
+        min-height: 350px;
+        padding: 25px 15px;
+    }
+    .team-member-image {
+        width: 90px;
+        height: 90px;
+    }
+    .team-member-bio {
+        max-width: 240px;
+        padding: 15px;
+    }
+}
+
+/* “Shine” keyframes (used above) */
+@keyframes shine {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
 }
