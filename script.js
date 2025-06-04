@@ -8,8 +8,7 @@ class LivingComic {
         this.currentView = 'home'; // 'home' or 'comic'
         this.currentStoryPath = [];
         this.storyPanels = this.defineStoryStructure();
-        
-        this.soundEffects = ['POW!', 'BANG!', 'ZOOM!', 'CRASH!', 'TICK!', 'SWOOSH!'];
+        this.currentBackgroundSound = null; // Initialize background sound player
         
         this.init();
     }
@@ -22,65 +21,75 @@ class LivingComic {
                 id: 'start',
                 caption: "He always plans too much for too little time. Today, he has only ten minutes. And a thousand tiny decisions.",
                 image: 'images/1.png',
-                next: 'friend_approach'
+                next: 'friend_approach',
+                sound: 'sounds/science-teacher-lecturing-33676.mp3',
+                soundEffect: 'TICK...TICK...'
             },
             'friend_approach': {
                 id: 'friend_approach',
-                caption: "She is chatting on but his brain’s already running ahead of his. Should he stay and chat or run to the room??? Help him make a decision.",
+                caption: "She is chatting on but his brain's already running ahead of his. Should he stay and chat or run to the room??? Help him make a decision.",
                 image: 'images/2.png',
                 choices: [
                     { text: 'STAY & CHAT', action: 'chat', next: 'chat_scene' },
                     { text: 'RUN TO ROOM', action: 'rush', next: 'hallway_run' }
-                ]
+                ],
+                sound: 'sounds/help-me-131903.mp3'
             },
             'chat_scene': {
                 id: 'chat_scene',
                 caption: "They sat down, and the conversation got better and better!!! And he kept worrying about the chores waiting for him in the room.",
                 image: 'images/3.png',
-                next: 'rush_stairs'
+                next: 'rush_stairs',
+                sound: 'sounds/soft-laughing-6445.mp3'
             },
             'rush_stairs': {
                 id: 'rush_stairs',
                 caption: "After they separated, he ran! Food? Laundry? Breathing? He just needed to clear his head in ten minutes or less.",
                 image: 'images/4.png',
-                next: 'hallway_run'
+                next: 'hallway_run',
+                sound: 'sounds/running-14658.mp3'
             },
             'hallway_run': {
                 id: 'hallway_run',
                 caption: "Less than ten minutes. No plan. No pause. Just run.",
                 image: 'images/5.png',
-                next: 'room_door'
+                next: 'room_door',
+                sound: 'sounds/running-14658.mp3'
             },
             'room_door': {
                 id: 'room_door',
                 caption: "He finally reached his room. But inside waited two battles: One boiling, one overflowing.",
                 image: 'images/6.png',
-                next: 'big_choice'
+                next: 'big_choice',
+                sound: 'sounds/male-sigh-6763.mp3'
             },
             'big_choice': {
                 id: 'big_choice',
-                caption: "He doesn’t have time to think. He needs to act. Now. HELP HIM CHOOSE!",
+                caption: "He doesn't have time to think. He needs to act. Now. HELP HIM CHOOSE!",
                 image: 'images/7.png',
                 choices: [
                     { text: 'MAKE RAMEN', action: 'ramen', next: 'ramen_bliss' },
                     { text: 'DO LAUNDRY', action: 'laundry', next: 'laundry_journey' }
-                ]
+                ],
+                sound: 'sounds/thinking-sound-effect-96989.mp3'
             },
             'ramen_bliss': {
                 id: 'ramen_bliss',
                 caption: "For a second, everything else faded. No deadlines. No choices. Just noodles.",
                 image: 'images/8.png',
-                next: 'time_shock'
+                next: 'time_shock',
+                sound: 'sounds/man-eating-teriyaki-noodles-33320.mp3'
             },
             'time_shock': {
                 id: 'time_shock',
                 caption: "But....He had almost forgotten that time was almost up. He quickly checked his phone. It was already time for his next class..",
                 image: 'images/9.png',
-                next: 'ramen_unfinished'
+                next: 'ramen_unfinished',
+                sound: 'sounds/horror-orchestra-warning-338415.mp3'
             },
             'ramen_unfinished': {
                 id: 'ramen_unfinished',
-                caption: "He didn’t finish the noodles. But time waits for no one. So he grabbed his bag... and ran.",
+                caption: "He didn't finish the noodles. But time waits for no one. So he grabbed his bag... and ran.",
                 image: 'images/10.png',
                 next: 'final_ending'
             },
@@ -88,7 +97,9 @@ class LivingComic {
                 id: 'laundry_journey',
                 caption: "Let's get this over with. He made his choice. Laundry over lunch.",
                 image: 'images/11.png',
-                next: 'laundry_hallway'
+                next: 'laundry_hallway',
+                sound: 'sounds/041544_last-dance-77508.mp3',
+                soundEffect: 'I got this'
             },
             'laundry_hallway': {
                 id: 'laundry_hallway',
@@ -100,13 +111,15 @@ class LivingComic {
                 id: 'washing_machine',
                 caption: "He finally set out for the unexplored zones. THE LAUNDRY ROOM. Where rigour is tested and only the strong survive.",
                 image: 'images/13.png',
-                next: 'laundry_victory'
+                next: 'laundry_victory',
+                sound: 'sounds/laundry-75135.mp3'
             },
             'laundry_victory': {
                 id: 'laundry_victory',
                 caption: "DONE AND GONE!!! Yalla to the next class!!!",
                 image: 'images/14.png',
-                next: 'final_ending'
+                next: 'final_ending',
+                sound: 'sounds/funny-yay-6273.mp3'
             },
             'final_ending': {
                 id: 'final_ending',
@@ -179,7 +192,6 @@ class LivingComic {
         // Preview panels
         document.querySelectorAll('.preview-panel').forEach(panel => {
             panel.addEventListener('click', () => this.previewPanel(panel));
-            panel.addEventListener('mouseenter', () => this.hoverPreview(panel));
         });
 
         // Slider navigation
@@ -188,6 +200,7 @@ class LivingComic {
 
         // Controls
         document.getElementById('restartBtn').addEventListener('click', () => this.restart());
+        document.getElementById('fullscreenBtn').addEventListener('click', () => this.toggleFullscreen());
         document.getElementById('modalClose').addEventListener('click', () => this.closeModal());
 
         // Keyboard navigation
@@ -214,19 +227,9 @@ class LivingComic {
             this.startComic();
         });
 
-        document.getElementById('navRestart').addEventListener('click', (e) => {
-            e.preventDefault();
-            this.restart();
-        });
-
         document.getElementById('navAbout').addEventListener('click', (e) => {
             e.preventDefault();
             this.showAbout();
-        });
-
-        document.getElementById('navFullscreen').addEventListener('click', (e) => {
-            e.preventDefault();
-            this.toggleFullscreen();
         });
 
         document.getElementById('navLogo').addEventListener('click', (e) => {
@@ -275,7 +278,7 @@ class LivingComic {
         this.buildInitialStoryPath();
         this.generateSlides();
         this.startTimer();
-        this.createSoundEffect();
+        this.goToSlide(0);
     }
 
     buildInitialStoryPath() {
@@ -336,16 +339,28 @@ class LivingComic {
         // Add choice portals if this panel has choices
         if (panel.choices) {
             console.log(`Adding choices for panel ${panel.id}:`, panel.choices);
+            
+            // Create a container for the choice buttons
+            const choiceContainer = document.createElement('div');
+            choiceContainer.className = 'choice-container';
+
             panel.choices.forEach((choice, choiceIndex) => {
                 const choicePortal = document.createElement('div');
                 choicePortal.className = 'choice-portal';
                 choicePortal.textContent = choice.text;
-                choicePortal.style.position = 'absolute';
-                choicePortal.style.top      = '60%';      // move _up_ from bottom
-                choicePortal.style[ choiceIndex === 0 ? 'left' : 'right' ] = '15%';
+                
+                // Remove absolute positioning styles from JS
+                // choicePortal.style.position = 'absolute';
+                // choicePortal.style.top      = '50%';
+                // choicePortal.style[ choiceIndex === 0 ? 'left' : 'right' ] = '5%';
+                
                 choicePortal.addEventListener('click', (e) => this.makeChoice(choice.action, choice.next, e));
-                photoContainer.appendChild(choicePortal);
+                // Append to the new container instead of photoContainer
+                choiceContainer.appendChild(choicePortal);
             });
+            
+            // Append the choice container to the slide, outside the comic panel
+            slide.appendChild(choiceContainer);
         }
         
         comicPanel.appendChild(panelContent);
@@ -415,42 +430,65 @@ class LivingComic {
         // Calculate optimal dimensions within constraints
         let optimalWidth, optimalHeight;
         
-        // Start with image's natural dimensions
-        if (aspectRatio > 1) {
-            // Landscape image
-            optimalWidth = Math.min(availableWidth * 0.9, imgWidth, 800);
+        // Use aggressive scaling factors to make the image as large as possible
+        const widthFactor = 0.98; // Use 98% of available width
+        const heightFactor = 0.95; // Use 95% of available height (leaving space for caption/padding)
+
+        // Calculate potential dimensions based on fitting to available width or height
+        const widthBasedOnHeight = availableHeight * heightFactor * aspectRatio;
+        const heightBasedOnWidth = availableWidth * widthFactor / aspectRatio;
+
+        // Choose the dimensions that are largest but still fit within natural image size and available space
+        if (widthBasedOnHeight <= availableWidth * widthFactor && widthBasedOnHeight <= imgWidth) {
+            // Fitting to height is the limiting factor, but width fits
+            optimalHeight = availableHeight * heightFactor;
+            optimalWidth = optimalHeight * aspectRatio;
+        } else if (heightBasedOnWidth <= availableHeight * heightFactor && heightBasedOnWidth <= imgHeight) {
+            // Fitting to width is the limiting factor, but height fits
+            optimalWidth = availableWidth * widthFactor;
             optimalHeight = optimalWidth / aspectRatio;
-        } else {
-            // Portrait image  
-            optimalHeight = Math.min(availableHeight * 0.8, imgHeight, 600);
+        } else if (imgWidth / (availableWidth * widthFactor) > imgHeight / (availableHeight * heightFactor)) {
+             // Image is relatively wider compared to available space ratio, fit to width
+             optimalWidth = availableWidth * widthFactor;
+            optimalHeight = optimalWidth / aspectRatio;
+        }
+         else {
+            // Image is relatively taller, fit to height
+            optimalHeight = availableHeight * heightFactor;
             optimalWidth = optimalHeight * aspectRatio;
         }
         
-        // Ensure we don't exceed available space
-        if (optimalWidth > availableWidth * 0.9) {
-            optimalWidth = availableWidth * 0.9;
-            optimalHeight = optimalWidth / aspectRatio;
-        }
+        // Ensure optimal dimensions do not exceed natural image dimensions
+        optimalWidth = Math.min(optimalWidth, imgWidth);
+        optimalHeight = Math.min(optimalHeight, imgHeight);
+
+        // Also ensure a reasonable minimum size if needed (optional, current CSS clamp might handle this)
+        // optimalWidth = Math.max(optimalWidth, 300); // Example minimum width
+        // optimalHeight = Math.max(optimalHeight, 200); // Example minimum height
         
-        if (optimalHeight > availableHeight * 0.8) {
-            optimalHeight = availableHeight * 0.8;
-            optimalWidth = optimalHeight * aspectRatio;
-        }
+        // Add space for caption (120px) and padding (40px total top/bottom)
+        const panelPadding = 40; // Total padding around image container
+        const captionHeight = 120; // Estimated height for caption
+
+        // Calculate panel dimensions based on optimal image size plus padding and caption
+        const panelWidthBasedOnImage = optimalWidth + panelPadding; // Panel width is image width + horizontal padding
+        const panelHeightBasedOnImage = optimalHeight + captionHeight + panelPadding; // Panel height is image height + caption + vertical padding
         
-        // Add space for caption (120px) and padding
-        const totalPanelHeight = optimalHeight + 120 + 40; // image + caption + padding
-        const totalPanelWidth = optimalWidth + 40; // image + padding
+        // The panel should be sized to contain its content, but not exceed available space.
+        // Choose the dimensions that best fit the content while staying within available space.
+        let finalPanelWidth = Math.min(panelWidthBasedOnImage, availableWidth);
+        let finalPanelHeight = Math.min(panelHeightBasedOnImage, availableHeight);
+
+        // Apply computed dimensions to the panel
+        panel.style.width = finalPanelWidth + 'px';
+        panel.style.height = finalPanelHeight + 'px';
         
-        // Apply computed dimensions with fallbacks
-        panel.style.width = Math.min(totalPanelWidth, availableWidth * 0.95) + 'px';
-        panel.style.height = Math.min(totalPanelHeight, availableHeight * 0.95) + 'px';
-        
-        // Ensure panel fits in all cases
-        panel.style.maxWidth = 'calc(100vw - 200px)';
-        panel.style.maxHeight = 'calc(100vh - 220px)';
+        // Ensure panel fits in all cases (redundant with lines above, but good safeguard)
+        panel.style.maxWidth = 'calc(100vw - 20px)'; // Minimal overall max width constraint
+        panel.style.maxHeight = 'calc(100vh - 60px)'; // Minimal overall max height constraint
         panel.style.overflow = 'hidden';
         
-        console.log(`Adjusted panel size: ${panel.style.width} x ${panel.style.height}`);
+        console.log(`Adjusted panel size: ${panel.style.width} x ${panel.style.height}. Optimal Image: ${optimalWidth.toFixed(0)}x${optimalHeight.toFixed(0)}`);
     }
 
     updateSliderWidth() {
@@ -490,28 +528,7 @@ class LivingComic {
             '5': "In a world demanding constant optimization, sometimes the most radical act is choosing comfort over productivity."
         };
         
-        this.createSoundEffect();
         this.createExplosion(panel);
-    }
-
-    hoverPreview(panel) {
-        this.createHoverSoundEffect(panel);
-    }
-
-    createHoverSoundEffect(panel) {
-        const effect = document.createElement('div');
-        effect.style.position = 'absolute';
-        effect.style.top = '10px';
-        effect.style.left = '10px';
-        effect.style.color = '#666';
-        effect.style.fontSize = '0.8rem';
-        effect.style.fontStyle = 'italic';
-        effect.style.pointerEvents = 'none';
-        effect.textContent = this.soundEffects[Math.floor(Math.random() * this.soundEffects.length)];
-        
-        panel.appendChild(effect);
-        
-        setTimeout(() => effect.remove(), 1000);
     }
 
     toggleMobileMenu() {
@@ -525,9 +542,7 @@ class LivingComic {
     // Slider Functions
     nextSlide() {
         if (this.currentSlide < this.currentStoryPath.length - 1) {
-            this.currentSlide++;
-            this.updateSliderPosition();
-            this.createSoundEffect();
+            this.goToSlide(this.currentSlide + 1);
         } else {
             // Check if we're at an ending
             const currentPanelId = this.currentStoryPath[this.currentSlide];
@@ -541,17 +556,60 @@ class LivingComic {
 
     prevSlide() {
         if (this.currentSlide > 0) {
-            this.currentSlide--;
-            this.updateSliderPosition();
-            this.createSoundEffect();
+            this.goToSlide(this.currentSlide - 1);
         }
     }
 
     goToSlide(slideIndex) {
+        console.log(`Navigating to slide index: ${slideIndex}`);
         if (slideIndex >= 0 && slideIndex < this.currentStoryPath.length) {
+            // Always stop any currently playing background sound first
+            if (this.currentBackgroundSound) {
+                console.log('Stopping current background sound...');
+                this.currentBackgroundSound.pause();
+                this.currentBackgroundSound.currentTime = 0;
+                this.currentBackgroundSound = null; // Clear the reference
+                console.log('Current background sound stopped and cleared.');
+            }
+
             this.currentSlide = slideIndex;
             this.updateSliderPosition();
-            this.createSoundEffect();
+
+            // Get the panel data for the new slide
+            const currentPanelId = this.currentStoryPath[this.currentSlide];
+            const currentPanel = this.storyPanels[currentPanelId];
+
+            // Display sound effect text if defined for this panel
+            if (currentPanel && currentPanel.soundEffect) {
+                const effect = document.createElement('div');
+                effect.className = 'sound-effect';
+                effect.textContent = currentPanel.soundEffect;
+                effect.style.left = Math.random() * 80 + 10 + '%';
+                effect.style.top = Math.random() * 60 + 20 + '%';
+                effect.style.position = 'absolute';
+                effect.style.pointerEvents = 'none';
+                effect.style.zIndex = '300';
+                
+                document.getElementById('comicWorld').appendChild(effect);
+                
+                setTimeout(() => effect.remove(), 2000);
+            }
+
+            // Play the background sound if defined for this panel
+            if (currentPanel && currentPanel.sound) {
+                console.log(`Attempting to play sound: ${currentPanel.sound}`);
+                this.currentBackgroundSound = new Audio(currentPanel.sound);
+                this.currentBackgroundSound.volume = 0.5; // Adjust volume as needed
+                this.currentBackgroundSound.play().then(() => {
+                    console.log(`Sound played successfully: ${currentPanel.sound}`);
+                }).catch(error => {
+                    console.error(`Error playing sound ${currentPanel.sound}:`, error);
+                });
+            } else {
+                 console.log('No background sound defined for this panel.');
+            }
+        } else {
+             console.log(`Invalid slide index: ${slideIndex}`);
         }
     }
 
@@ -572,21 +630,6 @@ class LivingComic {
         
         prevBtn.classList.toggle('disabled', this.currentSlide === 0);
         nextBtn.classList.toggle('disabled', this.currentSlide === this.currentStoryPath.length - 1);
-    }
-
-    createSoundEffect() {
-        const effect = document.createElement('div');
-        effect.className = 'sound-effect';
-        effect.textContent = this.soundEffects[Math.floor(Math.random() * this.soundEffects.length)];
-        effect.style.left = Math.random() * 80 + 10 + '%';
-        effect.style.top = Math.random() * 60 + 20 + '%';
-        effect.style.position = 'absolute';
-        effect.style.pointerEvents = 'none';
-        effect.style.zIndex = '300';
-        
-        document.getElementById('comicWorld').appendChild(effect);
-        
-        setTimeout(() => effect.remove(), 1000);
     }
 
     createExplosion(element) {
@@ -779,7 +822,7 @@ class LivingComic {
     showAbout() {
         const aboutText = `"Ten Minutes" is an interactive photo-comic about the chaos of student life — where ten minutes feels like a lifetime and a blink.
 
-You’ve got laundry piling up, ramen calling your name, and barely enough time to think. Every choice matters. What you pick shapes the story.
+You've got laundry piling up, ramen calling your name, and barely enough time to think. Every choice matters. What you pick shapes the story.
 
 🔸 Chat or dash?
 🔸 Noodles or chores?
@@ -804,50 +847,64 @@ Live your ten minutes.`;
 
     makeChoice(action, nextPanelId, event) {
         this.choices.push(action);
-        this.createSoundEffect();
         this.createExplosion(event.target);
-        
-        // Add the next panel(s) to the story path
-        this.extendStoryPath(nextPanelId);
 
         this.updateTimerUrgency();
-        this.hideChoicePortal(event.target);
+
+        // Hide all choice portals in the current panel immediately
+        const currentPanelElement = document.querySelector(`#slide${this.currentSlide + 1} .comic-panel`);
+        if (currentPanelElement) {
+            currentPanelElement.querySelectorAll('.choice-portal').forEach(portal => {
+                this.hideChoicePortal(portal);
+            });
+        }
         
-        // Auto-advance to next slide after choice
+        // Extend the story path by simply appending the chosen branch
+        // extendStoryPath returns the index in the updated path where the new panels started
+        const newPathStartIndex = this.extendStoryPath(nextPanelId);
+
+        // Regenerate slides with the updated path
+        this.generateSlides();
+
+        // Go directly to the start of the newly added branch
+        // A small timeout to allow DOM repaint after generateSlides
         setTimeout(() => {
-            this.nextSlide();
+            this.goToSlide(newPathStartIndex);
             
-            // Check if we've reached an ending after advancing
-            const currentPanelId = this.currentStoryPath[this.currentSlide];
-            const currentPanel = this.storyPanels[currentPanelId];
-            if (currentPanel && !currentPanel.next && !currentPanel.choices) {
+            // Check if the destination panel is an ending panel after navigating
+            const destinationPanelId = this.currentStoryPath[newPathStartIndex];
+            const destinationPanel = this.storyPanels[destinationPanelId];
+            if (destinationPanel && !destinationPanel.next && !destinationPanel.choices) {
                 // This is an ending panel, show conclusion after a delay
-                setTimeout(() => this.showConclusion(), 2000);
+                setTimeout(() => this.showConclusion(), 1500); // Slightly longer delay before conclusion
             }
-        }, 2000);
+        }, 100); // Small delay to ensure DOM is ready
     }
 
+    // extendStoryPath is used for building the path by appending
     extendStoryPath(startPanelId) {
         let currentPanelId = startPanelId;
+        const initialPathLength = this.currentStoryPath.length; // Length before adding new panels
         
-        // Follow the story chain until we hit a choice or ending
+        // Follow the story chain, adding panels to the path until a choice or ending is hit
         while (currentPanelId && !this.currentStoryPath.includes(currentPanelId)) {
             const panel = this.storyPanels[currentPanelId];
-            if (!panel) break;
+            if (!panel) break; // Stop if panel data is missing
             
             this.currentStoryPath.push(currentPanelId);
             
-            // If this panel has choices, stop here
-            if (panel.choices) {
+            // Stop if this panel has choices or is an ending
+            if (panel.choices || !panel.next) {
                 break;
             }
             
-            // Continue to next panel if it exists
+            // Move to the next panel in the chain
             currentPanelId = panel.next;
         }
         
-        // Regenerate slides with new path
-        this.generateSlides();
+        // Return the index in the currentStoryPath where the new panels started
+        // This is the index of the first panel of the new branch
+        return initialPathLength;
     }
 
     showConclusion() {
@@ -858,11 +915,14 @@ Live your ten minutes.`;
         
         this.openModal(conclusion);
         
+        // Check if the last panel added was an ending panel
+        if (finalPanel && !finalPanel.next && !finalPanel.choices) {
         setTimeout(() => {
             if (confirm('Experience a different path through these ten minutes?')) {
                 this.restart();
             }
         }, 5000);
+        }
     }
 
     generateConclusion() {
@@ -884,7 +944,6 @@ Live your ten minutes.`;
 
     handleTimeUp() {
         clearInterval(this.timerInterval);
-        this.createSoundEffect();
         this.shakeWorld();
         
         setTimeout(() => {
