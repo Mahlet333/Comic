@@ -232,6 +232,11 @@ class LivingComic {
             this.showAbout();
         });
 
+        document.getElementById('navTeam').addEventListener('click', (e) => {
+            e.preventDefault();
+            this.showTeam();
+        });
+
         document.getElementById('navLogo').addEventListener('click', (e) => {
             e.preventDefault();
             this.showHome();
@@ -246,16 +251,39 @@ class LivingComic {
     // View Management
     showHome() {
         this.currentView = 'home';
+        if (this.currentBackgroundSound) {
+            this.currentBackgroundSound.pause();
+            this.currentBackgroundSound.currentTime = 0;
+            this.currentBackgroundSound = null; // Reset the current sound
+        }
         document.getElementById('homePage').classList.add('active');
         document.getElementById('comicPage').classList.remove('active');
+        document.getElementById('teamPage').classList.remove('active');
         document.getElementById('timer').style.display = 'none';
         this.stopTimer();
+    }
+
+    showTeam() {
+        this.currentView = 'team';
+        if (this.currentBackgroundSound) {
+            this.currentBackgroundSound.pause();
+            this.currentBackgroundSound.currentTime = 0;
+            this.currentBackgroundSound = null; // Reset the current sound
+        }
+        document.getElementById('homePage').classList.remove('active');
+        document.getElementById('comicPage').classList.remove('active');
+        document.getElementById('teamPage').classList.add('active');
+        document.getElementById('timer').style.display = 'none';
+        this.stopTimer();
+        // Generate and display team members when showing the page
+        this.displayTeamMembers();
     }
 
     showComic() {
         this.currentView = 'comic';
         document.getElementById('homePage').classList.remove('active');
         document.getElementById('comicPage').classList.add('active');
+        document.getElementById('teamPage').classList.remove('active');
         document.getElementById('timer').style.display = 'block';
         
         // Make sure we have slides to show
@@ -534,9 +562,21 @@ class LivingComic {
     toggleMobileMenu() {
         const burger = document.getElementById('navBurger');
         const navLinks = document.getElementById('navLinks');
-        
+        const comicWorld = document.getElementById('comicWorld'); // Get comicWorld element
+        const overlay = document.getElementById('overlay'); // Get overlay element
+
         burger.classList.toggle('active');
         navLinks.classList.toggle('active');
+
+        // Toggle sidebar-active class on comicWorld to shift content
+        if (comicWorld) {
+            comicWorld.classList.toggle('sidebar-active');
+        }
+
+        // Toggle active class on overlay to show/hide it
+        if (overlay) {
+            overlay.classList.toggle('active');
+        }
     }
 
     // Slider Functions
@@ -843,6 +883,48 @@ Live your ten minutes.`;
 
         
         this.openModal(aboutText);
+    }
+
+    // Team Page Management
+    displayTeamMembers() {
+        const teamMembersContainer = document.getElementById('team-members-container');
+        // Clear existing members to avoid duplicates if the function is called multiple times
+        if (teamMembersContainer) {
+            teamMembersContainer.innerHTML = ''; 
+        }
+
+        const teamMembers = [
+            { name: 'Kayesu', role: 'Grand Commander', image: 'images/team/bart.png', gender: 'male' },
+            { name: 'Alisa', role: 'The ArchMage', image: 'images/team/mickey.png', gender: 'female' },
+            { name: 'Ali', role: 'The White Knight', image: 'images/team/spongebob.png', gender: 'male' },
+            { name: 'Nuri', role: 'The ArchMaester', image: 'images/team/tweety.png', gender: 'female' }
+        ];
+
+        teamMembers.forEach(member => {
+            const memberElement = document.createElement('div');
+            memberElement.className = 'team-member';
+
+            const imgElement = document.createElement('img');
+            imgElement.className = 'team-member-image';
+            imgElement.src = member.image;
+            imgElement.alt = member.name;
+
+            const nameElement = document.createElement('div');
+            nameElement.className = 'team-member-name';
+            nameElement.textContent = member.name;
+
+            const roleElement = document.createElement('div');
+            roleElement.className = 'team-member-role';
+            roleElement.textContent = member.role;
+
+            memberElement.appendChild(imgElement);
+            memberElement.appendChild(nameElement);
+            memberElement.appendChild(roleElement);
+
+            if (teamMembersContainer) {
+                teamMembersContainer.appendChild(memberElement);
+            }
+        });
     }
 
     makeChoice(action, nextPanelId, event) {
