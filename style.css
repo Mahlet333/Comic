@@ -103,12 +103,17 @@ body {
         radial-gradient(circle at 20% 80%, rgba(255, 193, 7, 0.15) 0%, transparent 50%),
         radial-gradient(circle at 80% 20%, rgba(255, 87, 34, 0.15) 0%, transparent 50%),
         linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden; /* Hide horizontal overflow */
     /* Account for navbar and other UI elements */
     padding-top: 80px;
     padding-bottom: 100px; /* Space for controls and dots */
     padding-left: 80px;   /* Space for navigation arrows */
     padding-right: 80px;
+    /* Ensure inner content respects padding */
+    box-sizing: border-box;
+    /* Added transition for padding when sidebar is active */
+    transition: padding-left 0.3s ease;
 }
 
 /* HOME PAGE STYLES */
@@ -138,7 +143,6 @@ body {
     text-align: center;
     max-width: 1200px;
     padding: 2rem;
-    animation: fadeInUp 1s ease 0.5s both;
 }
 
 .title-section {
@@ -172,8 +176,43 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
+.home-layout-container {
+    display: flex; /* Use flexbox for horizontal layout */
+    align-items: flex-start; /* Align items at the top */
+    justify-content: center; /* Center the items horizontally */
+    gap: 40px; /* Add space between the sections */
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+    margin-bottom: 3rem; /* Add space below the container */
+    max-width: 1200px; /* Limit the maximum width */
+    margin-left: auto;
+    margin-right: auto;
+    /* Added padding for inner spacing on very small screens */
+    padding: 0 10px; /* Add some horizontal padding */
+}
+
+.left-section {
+    flex: 0 0 auto; /* Don't grow or shrink */
+    /* Adjusted width for better responsiveness */
+    width: 100%; 
+    max-width: 300px; /* Maintain a max width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.home-description {
+    flex: 1; /* Take up remaining space */
+    min-width: 280px; /* Slightly reduced min-width */
+    margin: 0;
+    background: rgba(0, 0, 0, 0.8);
+    border: 3px solid #ff6b35;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+}
+
 .interactive-clock {
-    margin: 3rem 0;
+    margin: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -343,16 +382,6 @@ body {
     color: #000;
     text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
     text-align: center;
-}
-
-.home-description {
-    background: rgba(0, 0, 0, 0.8);
-    border: 3px solid #ff6b35;
-    border-radius: 20px;
-    padding: 2rem;
-    margin: 3rem auto;
-    max-width: 800px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
 }
 
 .home-description p {
@@ -677,17 +706,6 @@ body {
 }
 
 /* ANIMATIONS */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 @keyframes titlePulse {
     0%, 100% { 
         transform: rotate(-2deg) scale(1); 
@@ -868,7 +886,7 @@ body {
 /* TIMER - RESPONSIVE */
 .comic-timer {
     position: absolute;
-    top: 100px;
+    top: 100px; /* Keep top fixed relative to parent */
     right: 20px;
     background: #ff4444;
     color: white;
@@ -943,7 +961,7 @@ body {
 /* NARRATIVE BOX - RESPONSIVE */
 .narrative-box {
     position: absolute;
-    bottom: 100px;
+    bottom: 100px; /* Keep bottom fixed relative to parent */
     left: 50%;
     transform: translateX(-50%);
     background: rgba(0, 0, 0, 0.9);
@@ -1003,6 +1021,8 @@ body {
     position: fixed;
     right: 20px;
     bottom: 20px;
+    /* Ensure it doesn't overlap with mobile nav links or controls */
+    z-index: 100;
 }
 
 /* Update nav-links to be centered after removing items */
@@ -1099,6 +1119,12 @@ body {
     overflow-y: auto;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     font-size: clamp(0.9rem, 2vw, 1rem); /* Responsive font size */
+    /* Center content within modal */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 .modal-close {
@@ -1117,96 +1143,350 @@ body {
     align-items: center;
     justify-content: center;
     font-family: 'Permanent Marker', cursive;
+    z-index: 10; /* Ensure it's above modal content */
 }
 
 /* COMPREHENSIVE RESPONSIVE DESIGN */
 @media (max-width: 768px) {
     .comic-world {
-        padding: 60px 10px 80px 60px; /* Reduced padding for mobile */
+        padding: 60px 10px 80px 60px; /* Adjusted padding for mobile */
+         /* Adjust padding when sidebar is active */
+        &.sidebar-active {
+            padding-left: calc(60px + 350px); /* Sidebar width + original padding */
+             padding-top: 0; /* Set top padding to 0 when sidebar is active */
+        }
     }
     
     .comic-navbar {
-        padding: 10px 20px;
         height: 60px; /* Smaller navbar on mobile */
+        padding: 10px 20px; /* Adjusted padding */
     }
 
     .nav-links {
+        /* Position off-screen as a left sidebar */
         position: fixed;
-        top: 60px; /* Adjusted for smaller navbar */
-        left: 0;
-        right: 0;
-        background: linear-gradient(135deg, #ff6b35, #ff9800);
+        top: 60px; /* Below navbar */
+        left: -350px; /* Hide off-screen */
+        width: 350px; /* Increased Sidebar width */
+        height: calc(100% - 60px); /* Full height minus navbar */
+        /* Changed background to solid dark red */
+        background: linear-gradient(135deg, #ff6b35, #ff9800); /* Changed background to orange gradient */
         flex-direction: column;
-        padding: 20px;
-        gap: 15px;
-        transform: translateY(-100%);
-        transition: transform 0.3s ease;
-        border-bottom: 5px solid #000;
+        padding: 0 20px 40px 20px; /* Adjusted padding (top set to 0) */
+        gap: 25px; /* Increased gap */
+        align-items: flex-start; /* Align links to the left */
+        transition: left 0.3s ease; /* Smooth transition */
+        z-index: 2050; /* Increased z-index to be above modal and overlay */
+        border-right: 5px solid #000; /* Add a border */
+        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3); /* Add shadow */
+         /* Added styling for nav links inside the sidebar */
+        justify-content: flex-start; /* Align links to the start */
     }
 
     .nav-links.active {
-        transform: translateY(0);
+        left: 0; /* Slide in */
     }
 
     .nav-burger {
-        display: flex;
+        display: flex; /* Show burger menu */
+        position: relative; /* Needed for transform */
+        z-index: 2055; /* Increased z-index to be above sidebar */
     }
 
-    .comic-panel {
-        max-height: calc(100vh - 180px); /* Account for smaller navbar */
+    /* Style for the burger icon when active */
+    .nav-burger.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
     }
 
+    .nav-burger.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .nav-burger.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -5px);
+    }
+    
+    /* Added overlay for when the sidebar is active */
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        /* Changed background to solid dark red with transparency */
+        background: rgba(139, 0, 0, 0.7); /* Dark red with transparency */
+        z-index: 2040; /* Increased z-index to be above modal, below sidebar */
+        opacity: 0;
+        pointer-events: none; /* Allow clicks to pass through when not active */
+        transition: opacity 0.3s ease;
+    }
+
+    .overlay.active {
+        opacity: 1;
+        pointer-events: all; /* Prevent clicks when active */
+        /* Change background to orange with transparency */
+        background: rgba(255, 107, 53, 0.7); /* Orange with transparency */
+    }
+    
+    /* Increased font size and adjusted padding for navigation links */
+    .nav-link {
+        font-size: clamp(1.8rem, 6vw, 2.5rem); /* Responsive font size */
+        color: #fff; /* Ensure color is white */
+        text-shadow: 3px 3px 0px #000; /* Add text shadow for contrast */
+        padding: 2.5vh 3.5vw; /* Adjusted padding using viewport units */
+        border: 3px solid #000; /* Keep border */
+        border-radius: 15px; /* Keep border radius */
+        margin-bottom: 15px; /* Add some margin between links */
+        text-align: center; /* Center text (though flexbox will handle) */
+        box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        max-width: calc(100% - 40px); /* Set max-width relative to sidebar with padding */
+        min-height: 9vh; /* Increased minimum height */
+        display: flex; /* Use flexbox to center content vertically */
+        align-items: center; /* Center content vertically */
+        justify-content: center; /* Center content horizontally */
+        background: rgba(0, 0, 0, 0); /* Ensure transparent background */
+        color: #fff; /* Ensure text color is white */
+    }
+
+    /* Adjust timer position */
+    .comic-timer {
+        top: 70px; /* Adjusted position */
+        right: 10px;
+    }
+
+    /* Adjust narrative box position */
+    .narrative-box {
+        bottom: 80px; /* Adjusted position */
+        max-width: 90%; /* Increased max-width */
+         /* Adjust left position when sidebar is active */
+        &.sidebar-active {
+             left: calc(50% + 175px); /* Shift right by half sidebar width */
+        }
+    }
+
+    /* Adjust slider nav size and position */
     .slider-nav {
         width: 40px;
         height: 40px;
         font-size: 1rem;
     }
 
-    .slider-nav.prev {
-        left: 10px;
+    /* Adjust fullscreen button position */
+    .fullscreen-button {
+        right: 10px;
+        bottom: 10px;
+        padding: 8px 15px; /* Adjusted padding */
+        font-size: 0.9rem; /* Adjusted font size */
     }
 
-    .slider-nav.next {
-        right: 10px;
+    /* Adjust modal content padding */
+    .modal-content {
+        padding: 1.5rem;
     }
 
-    .comic-timer {
-        top: 70px; /* Adjusted for smaller navbar */
-        right: 10px;
+    /* Ensure comic panel is not hidden by sidebar */
+    .comic-panel {
+        /* Adjust left margin when sidebar is active */
+        &.sidebar-active {
+            margin-left: calc(auto + 350px); /* Shift right by sidebar width */
+        }
+    }
+
+    /* Add filler div style */
+    .sidebar-top-filler {
+        height: 60px; /* Height to cover area below logo */
+        width: 100%;
+        background: linear-gradient(135deg, #ff6b35, #ff9800); /* Orange gradient */
+        z-index: 2051; /* Above sidebar, below logo */
     }
 }
 
 @media (max-width: 480px) {
     .comic-world {
-        padding: 60px 5px 70px 50px; /* Even more compact for small phones */
+        padding: 60px 5px 70px 50px; /* Further adjusted padding */
+         /* Adjust padding when sidebar is active */
+        &.sidebar-active {
+            padding-left: calc(50px + 300px); /* Sidebar width + original padding */
+             padding-top: 0; /* Set top padding to 0 when sidebar is active */
+        }
     }
-    
-    .comic-panel {
-        border-radius: 15px; /* Smaller border radius */
-        border-width: 5px; /* Thinner borders */
+
+    .comic-navbar {
+        padding: 8px 10px; /* Further adjusted padding */
     }
-    
-    .image-caption {
-        -webkit-line-clamp: 3; /* Fewer lines on small screens */
-        max-height: 90px;
+
+    .nav-links {
+        top: 60px; /* Keep consistent with 768px */
+        padding: 0 10px 15px 10px; /* Further adjusted padding for links (top set to 0) */
+        gap: 20px; /* Increased gap */
+        width: 300px; /* Adjusted sidebar width for 480px */
+        height: calc(100% - 60px);
+        left: -300px;
+        /* Changed background to solid dark red */
+        background: linear-gradient(135deg, #ff6b35, #ff9800); /* Changed background to orange gradient */
+        z-index: 2050; /* Increased z-index to be above modal and overlay */
     }
-    
-    .choice-portal {
-        font-size: 0.6rem; /* Smaller text in choice portals */
+
+    .nav-links.active {
+        left: 0;
+    }
+
+    /* Add filler div style */
+    .sidebar-top-filler {
+        height: 60px; /* Height to cover area below logo */
+        width: 100%;
+        background: linear-gradient(135deg, #ff6b35, #ff9800); /* Orange gradient */
+        z-index: 2051; /* Above sidebar, below logo */
+    }
+
+    /* Adjust timer position and size */
+    .comic-timer {
+        top: 65px; /* Adjusted position */
+        right: 5px;
+        font-size: 1.2rem; /* Adjusted font size */
+        padding: 8px 12px; /* Adjusted padding */
+    }
+
+    /* Adjust narrative box position and size */
+    .narrative-box {
+        bottom: 65px; /* Adjusted position */
+        max-width: 95%; /* Increased max-width */
+        font-size: 0.7rem; /* Keep consistent */
+        padding: 8px 12px; /* Adjusted padding */
+         /* Adjust left position when sidebar is active */
+        &.sidebar-active {
+             left: calc(50% + 150px); /* Shift right by half sidebar width */
+        }
+    }
+
+    /* Adjust slider nav size and position */
+    .slider-nav {
+        width: 25px;
+        height: 25px;
+        font-size: 0.7rem;
+    }
+
+    /* Adjust fullscreen button position and size */
+    .fullscreen-button {
+        right: 5px;
+        bottom: 5px;
+        padding: 6px 10px; /* Adjusted padding */
+        font-size: 0.8rem; /* Adjusted font size */
+    }
+
+     /* Adjust modal content padding and font size */
+     .modal-content {
+        padding: 1rem;
+        font-size: 0.8rem;
+     }
+
+    /* Add specific style for active overlay in 480px query */
+    .overlay.active {
+        background: rgba(255, 107, 53, 0.7); /* Orange with transparency */
+        z-index: 2040; /* Increased z-index to be above modal, below sidebar */
+    }
+
+    /* Add specific style for nav burger in 480px query */
+    .nav-burger {
+        z-index: 2055; /* Increased z-index to be above sidebar */
     }
 }
 
 @media (orientation: landscape) and (max-height: 600px) {
     .comic-world {
         padding: 60px 80px 60px 80px; /* Adjust for landscape */
+         /* Adjust padding when sidebar is active */
+         &.sidebar-active {
+            padding-left: calc(80px + 200px); /* Sidebar width + original padding */
+         }
     }
     
     .comic-panel {
         max-height: calc(100vh - 140px); /* More height in landscape */
+        /* Adjust left margin when sidebar is active */
+        &.sidebar-active {
+            margin-left: calc(auto + 200px); /* Shift right by sidebar width */
+        }
     }
     
     .narrative-box {
         bottom: 60px; /* Closer to bottom in landscape */
+         /* Adjust left position when sidebar is active */
+        &.sidebar-active {
+             left: calc(50% + 100px); /* Shift right by half sidebar width */
+        }
+    }
+
+    /* Adjust positions for landscape if needed */
+     .comic-timer {
+         top: 70px;
+     }
+
+     .fullscreen-button {
+         bottom: 10px;
+     }
+
+     /* Further adjustments for very short landscape screens */
+    .comic-world {
+        padding-top: 50px; /* Reduce padding for short screens */
+        padding-bottom: 50px;
+         /* Adjust padding when sidebar is active */
+         &.sidebar-active {
+            padding-left: calc(80px + 200px); /* Sidebar width + original padding */
+         }
+    }
+
+    .comic-navbar {
+        height: 50px;
+    }
+
+    .nav-links {
+        top: 50px;
+        height: calc(100% - 50px);
+    }
+
+     .comic-timer {
+         top: 60px;
+         font-size: 1.3rem;
+     }
+
+     .narrative-box {
+         bottom: 50px;
+         font-size: 0.6rem;
+          /* Adjust left position when sidebar is active */
+        &.sidebar-active {
+             left: calc(50% + 100px); /* Shift right by half sidebar width */
+        }
+     }
+
+     .slider-nav {
+         width: 35px;
+         height: 35px;
+     }
+
+     .fullscreen-button {
+         bottom: 5px;
+     }
+
+     .modal-content {
+        padding: 0.8rem;
+        font-size: 0.7rem;
+     }
+
+     .modal-close {
+        width: 20px;
+        height: 20px;
+        font-size: 0.7rem;
+        top: 5px;
+        right: 5px;
+     }
+
+      /* Ensure comic panel is not hidden by sidebar */
+    .comic-panel {
+        /* Adjust left margin when sidebar is active */
+        &.sidebar-active {
+            margin-left: calc(auto + 200px); /* Shift right by sidebar width */
+        }
     }
 }
 
@@ -1248,4 +1528,109 @@ body {
         transform: scale(20);
         opacity: 0;
     }
+}
+
+/* TEAM PAGE STYLES */
+.team-page {
+    display: none; /* Hidden by default */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Updated background and text color to match home page */
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: #fff;
+    overflow-y: auto;
+    padding: 80px 20px 20px 20px; /* Space for fixed navbar */
+    box-sizing: border-box;
+    text-align: center;
+    z-index: 50; /* Below navbar, above other content when active */
+}
+
+.team-page.active {
+    display: flex; /* Use flex to center content easily */
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Align content to top after padding */
+}
+
+.team-content {
+    max-width: 900px; /* Limit width for readability */
+    margin: 0 auto;
+    padding: 2rem; /* Increased padding to match home-description */
+    box-sizing: border-box;
+    /* Added background, border, and shadow to match home-description */
+    background: rgba(0, 0, 0, 0.8);
+    border: 3px solid #ff6b35;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+}
+
+.team-title {
+    font-family: 'Permanent Marker', cursive; /* Changed font to match main-title */
+    font-size: clamp(2rem, 5vw, 2.5rem); /* Adjusted size */
+    margin-bottom: 10px;
+    color: #ff6b35; /* Changed color to match main-title */
+    text-shadow: 
+        3px 3px 0px #000,
+        -1px -1px 0px #000,
+        1px -1px 0px #000,
+        -1px 1px 0px #000; /* Added text shadow */
+}
+
+.team-subtitle {
+    font-family: 'Architects Daughter', cursive; /* Changed font to match subtitle */
+    font-size: clamp(1rem, 2.5vw, 1.2rem); /* Adjusted size */
+    margin-bottom: 40px;
+    color: #fff; /* Changed color to match subtitle */
+    background: rgba(0, 0, 0, 0.7);
+    padding: 1rem 2rem;
+    border: 3px solid #ff6b35;
+    border-radius: 25px;
+    display: inline-block;
+    transform: rotate(1deg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.team-members-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px; /* Space between team members */
+    margin-top: 30px; /* Add space below subtitle */
+}
+
+.team-member {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    /* Adjusted width for better responsiveness */
+    width: 100%; /* Allow to take full width on small screens */
+    max-width: 150px; /* Maintain a max width */
+}
+
+.team-member-image {
+    width: 120px; /* Size of the circular image */
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover; /* Ensure image covers the circle */
+    margin-bottom: 10px;
+    border: 5px solid #000; /* Changed border to match other components */
+    box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3); /* Added box shadow */
+}
+
+.team-member-name {
+    font-family: 'Permanent Marker', cursive; /* Changed font */
+    font-size: 1.2em;
+    color: #ff6b35; /* Changed color */
+    margin-bottom: 5px;
+    text-shadow: 1px 1px 0px #000; /* Added text shadow */
+}
+
+.team-member-role {
+    font-family: 'Architects Daughter', cursive; /* Changed font */
+    font-size: 0.9em;
+    color: #fff; /* Changed color */
 }
